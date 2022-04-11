@@ -14,7 +14,8 @@ offset = radius/10
 
 #NETWORK PARAMETERS
 
-
+hebbian_alpha = .2
+hebbian_sigma = .1
 
 #EVOLUTION PARAMETERS
 mutation_prob = .1
