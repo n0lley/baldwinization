@@ -6,7 +6,7 @@ class BUILDER:
     def make_body(self):
         pass
         
-    def make_brain(self, controller):
+    def make_brain(self, weights, hebb):
         pass
 
     def get_type(self):

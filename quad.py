@@ -1,10 +1,10 @@
 import pyrosim
 import numpy as np
 
-from robot import ROBOT
+from builder import BUILDER
 import experiment_parameters as ep
 
-class QUAD(ROBOT):
+class QUAD(BUILDER):
     
     def __init__(self):
         super().__init__()
@@ -82,3 +82,45 @@ class QUAD(ROBOT):
         pyrosim.End()
 
     
+    def make_brain(self, weights, hebb):
+        motorNeurons = []
+        sensorNeurons = []
+        hiddenNeurons = []
+        
+        pyrosim.Start_NeuralNetwork("quad_brain.nndf")
+        
+        for i in range(4): #Touch sensors on leg ends
+            sensorNeurons.append(i)
+            pyrosim.Send_Touch_Sensor_Neuron(name=i, linkName='body%d'%(i+5))
+
+        for i in range(4, 8): #Proprioceptive sensors on hip joints
+            sensorNeurons.append(i)
+            pyrosim.Send_Proprioceptive_Sensor_Neuron(name=i, jointName='body0_body%d'%(i-3))
+        
+        for i in range(8, 12): #Proprioceptive sensors on knee joints
+            sensorNeurons.append(i)
+            pyrosim.Send_Proprioceptive_Sensor_Neuron(name=i, jointName='body%d_body%d'%(i-7, i-3))
+        
+        for i in range(12, 24):
+            hiddenNeurons.append(i)
+            pyrosim.Send_Hidden_Neuron(name=i)
+        
+        for i in range(24, 28): #Hip joint motors
+            motorNeurons.append(i)
+            pyrosim.Send_Motor_Neuron(name=i, jointName='body0_body%d'%(i-23))
+        
+        for i in range(28, 32): #Knee joint motors
+            motorNeurons.append(i)
+            pyrosim.Send_Motor_Neuron(name=i, jointName='body%d_body%d'%(i-27, i-23))
+       
+        for s in sensorNeurons:
+            for h in hiddenNeurons:
+                w = weights[(s, h)]
+                pyrosim.Send_Synapse(sourceNeuronName=s, targetNeuronName=h, weight=w, learningRule=hebb[(s, h)])
+
+        for h in hiddenNeurons:
+            for m in motorNeurons:
+                w = weights[(s, h)]
+                pyrosim.Send_Synapse(sourceNeuronName=h, targetNeuronName=m, weight=w, learningRule=hebb[(s, h)])
+        
+        pyrosim.End()

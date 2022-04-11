@@ -49,7 +49,7 @@ class SNAKE(BUILDER):
             
         pyrosim.End()
 
-    def make_brain(self, genome):
+    def make_brain(self, weights, hebb):
         motorNeurons = []
         sensorNeurons = []
         hiddenNeurons = []
@@ -72,12 +72,12 @@ class SNAKE(BUILDER):
 
         for s in sensorNeurons:
             for h in hiddenNeurons:
-                gene = genome[s, h]
-                pyrosim.Send_Synapse(sourceNeuronName=s, targetNeuronName=h, weight=gene[0], learningRule=gene[1:])
+                w = weights[(s, h)]
+                pyrosim.Send_Synapse(sourceNeuronName=s, targetNeuronName=h, weight=w, learningRule=hebb[(s, h)])
 
         for h in hiddenNeurons:
             for m in motorNeurons:
-                gene = genome[h, m]
-                pyrosim.Send_Synapse(sourceNeuronName=h, targetNeuronName=m, weight=gene[0], learningRule=gene[1:])
+                w = weights[(s, h)]
+                pyrosim.Send_Synapse(sourceNeuronName=h, targetNeuronName=m, weight=w, learningRule=hebb[(s, h)])
         
         pyrosim.End()
