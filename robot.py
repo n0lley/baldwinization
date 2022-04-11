@@ -35,7 +35,9 @@ class ROBOT:
     def get_fitness(self):
         position = p.getLinkState(self.robotId, 0)[0]
         displacement = (position[0]**2 + position[1]**2)**.5
-        return displacement
+        f = open("fitness.txt", 'w')
+        f.write(str(displacement))
+        f.close()
     
     def make_body(self):
         pass
