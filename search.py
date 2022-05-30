@@ -76,6 +76,7 @@ def select(population):
 #generate initial robot
 population = []
 robot_type = "snake"
+
 population.append(CONTROLLER(robot_type))
 
 #generate parent hebbian parameter set

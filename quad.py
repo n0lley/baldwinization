@@ -10,7 +10,7 @@ class QUAD(BUILDER):
         self.type = "quad"
 
     def make_body():
-        pyrosim.Start_URDF("quad_body.urdf")
+        pyrosim.Start_URDF("bodyfiles/quad_body.urdf")
         
         #body and first body-leg joint - root nodes
         pyrosim.Send_Cube(

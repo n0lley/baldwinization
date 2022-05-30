@@ -10,7 +10,7 @@ class HEX(BUILDER):
         self.type = "hex"
 
     def make_body(self):
-        pyrosim.Start_URDF("hex_body.urdf")
+        pyrosim.Start_URDF("bodyfiles/hex_body.urdf")
         #central body mass
         pyrosim.Send_Cube(
             name='body0',

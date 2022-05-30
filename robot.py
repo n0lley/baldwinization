@@ -14,7 +14,7 @@ class ROBOT:
         body_file = robot_type+"_body.urdf"
         brain_file = robot_type+"_brain.nndf"
         
-        self.robotId = p.loadURDF("/botfiles/"+body_file)
+        self.robotId = p.loadURDF("/bodyfiles/"+body_file)
         pyrosim.Prepare_To_Simulate(self.robotId)
         self.nn = NEURAL_NETWORK(brain_file, do_hebbian=True)
         
@@ -37,9 +37,3 @@ class ROBOT:
         f = open("fitnesses/fitness.txt", 'w')
         f.write(str(displacement))
         f.close()
-    
-    def make_body(self):
-        pass
-    
-    def make_brain(self):
-        pass
