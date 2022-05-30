@@ -1,10 +1,12 @@
 import pyrosim
+import os
+
 from snake import SNAKE
 from quad import QUAD
 from hex import HEX
 
 def create_world():
-    pyrosim.Start_SDF("world.sdf")
+    pyrosim.Start_SDF("bodyfiles/world.sdf")
     pyrosim.End()
 
 def create_bodies():
@@ -15,4 +17,7 @@ def create_bodies():
     hex = HEX()
     hex.make_body()
 
+if not os.path.exists("./bodyfiles"):
+    os.mkdir("bodyfiles")
 create_world()
+create_bodies()

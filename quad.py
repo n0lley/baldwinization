@@ -9,7 +9,7 @@ class QUAD(BUILDER):
         super().__init__()
         self.type = "quad"
 
-    def make_body():
+    def make_body(self):
         pyrosim.Start_URDF("bodyfiles/quad_body.urdf")
         
         #body and first body-leg joint - root nodes
