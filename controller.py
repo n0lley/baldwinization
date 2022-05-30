@@ -1,20 +1,34 @@
 import numpy as np
 import os
 
-from robot import ROBOT
+import experiment_parameters as ep
 from snake import SNAKE
 from quad import QUAD
 from hex import HEX
 
 class CONTROLLER:
     
-    def __init__(self, type):
+    def __init__(self, type, input_parameters=None):
+        """
+        From provided robot type, calculate genome dimensions and generate a random nn genome of that size
+        If no hebbian parameters are provided for use, generate a new set of hebbian parameters.
+        """
     
         dimensions = []
         self.genome = {}
+        self.hebbian_parameters = {}
         self.fitness = 0
         self.behavior = {}
-        
+
+        has_hebbs = True
+        if input_parameters == None:
+            has_hebbs = False
+            self.hebbian_noise = {}
+        else:
+            self.hebbian_parameters = input_parameters[0]
+            self.hebbian_noise = input_parameters[1]
+
+        #Robot type genome dimensions - Each column has a range of integers indicating the id numbers of the neurons
         if type == "snake":
             dimensions = [range(4), range(4,8), range(8,11)]
             self.generator = SNAKE()
@@ -30,48 +44,69 @@ class CONTROLLER:
         else:
             print("Error - robot type", type, "not recognized. Genome creation failed.")
             exit(0)
-        
+
+        #create (neuron, neuron) pairs and attach random synaptic weights to them
+        #generate hebbian parameters if none have been provided
         for col in range(len(dimensions)-1):
             for n1 in dimensions[col]:
                 for n2 in dimensions[col+1]:
                     self.genome[(n1, n2)] = self.generate_gene()
-        
+                    if not has_hebbs:
+                        self.hebbian_parameters[(n1, n2)] = self.generate_hebbian()
+                        self.hebbian_noise[(n1,n2)] = [0]*5
+
     
     def generate_gene(self):
+        """
+        Generates and returns a synaptic weight.
+        Should only be called at initialization
+        """
         weight = (np.random.random()*2) - 1
         weight = round(weight, 6)
-        learningRate = round(np.random.random(), 6)
-        gene = [weight, learningRate]
-        for i in range(4):
-            param = round(np.random.random(), 6)
-            gene.append(param)
-        return gene
+        return weight
+
+    def generate_hebbian(self):
+        """
+        Generates and returns a set of hebbian parameters.
+        Should only be called at initialization and only if no parameters are provided.
+        """
+        parameter_set = []
+        for i in range(5):
+            p = round(np.random.random()*2 - 1, 6)
+            parameter_set.append(p)
+
+        return parameter_set
 
     def mutate(self):
+        """
+        Modify each beginning synaptic weight with probability (ep.mutation_prob). Perturbations are on a normal distribution centered on the current synaptic weight, bounded within the range [-1, 1]
+        """
         for gene in self.genome:
             if np.random.random() < ep.mutation_prob:
-                gene[0] = np.random.normal(loc = gene[0])
-                gene[0] = round(gene[0], 6)
-                if gene[0] < -1: gene[0] = -1
-                elif gene[0] > 1: gene[0] = 1
-            
-            if np.random.random() < ep.mutation_prob:
-                gene[1] = round(np.random.normal(loc=gene[1]), 6)
-                if gene[1] < 0: gene[0] = 0
-                elif gene[1] > 1: gene[0] = 1
-                
-                for i in range(2,6):
-                    gene[i] = round(np.random.normal(loc=gene[i]), 6)
-                    if gene[i] < 0 : gene[i] = -1
-                    elif gene[i] > 1 : gene[i] = 1
+                self.genome[gene][0] = np.random.normal(loc = self.genome[gene][0])
+                self.genome[gene][0] = round(self.genome[gene][0], 6)
+                if self.genome[gene][0] < -1: self.genome[gene][0] = -1
+                elif self.genome[gene][0] > 1: self.genome[gene][0] = 1
 
     def get_genome(self):
         return self.genome
+        
+    def get_hebbian_parameters(self):
+        return self.hebbian_parameters
+
+    def get_hebbian_noise(self):
+        return self.hebbian_noise
+        
+    def get_fitness(self):
+        return self.fitness
     
     def Print(self):
         for gene in self.genome:
             print(gene, ":", self.genome[gene])
 
-    def evaluate(self):
-        self.generator.make_brain(self.get_genome())
-        os.system("python3 simulate.py "+self.generator.get_type())
+    def evaluate(self, play_blind=1):
+        self.generator.make_brain(self.get_genome(), self.get_hebbian_parameters())
+        os.system("python3 simulate.py "+self.generator.get_type()+" "+str(play_blind))
+        f = open("fitnesses/fitness.txt", 'r')
+        fits = f.read().strip().split('\n')
+        self.fitness = float(fits[-1])
