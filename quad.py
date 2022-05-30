@@ -1,5 +1,4 @@
 import pyrosim
-import numpy as np
 
 from builder import BUILDER
 import experiment_parameters as ep

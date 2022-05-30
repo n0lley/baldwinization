@@ -2,7 +2,7 @@
 import math
 
 sim_time = 1000
-dt = .1
+dt = .001
 gravity = -9.8
 
 monitor_percent = .1
@@ -20,7 +20,7 @@ hebbian_sigma = .1
 #EVOLUTION PARAMETERS
 mutation_prob = .1
 total_gens = 100
-pop_size = 50
+pop_size = 5
 num_children = 50
 tournament_size = 10
 tournament_winners = 3

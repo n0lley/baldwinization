@@ -1,5 +1,4 @@
 import pyrosim
-import numpy as np
 
 from builder import BUILDER
 import experiment_parameters as ep
@@ -12,7 +11,7 @@ class SNAKE(BUILDER):
         
     def make_body(self):
         
-        pyrosim.Start_URDF("snake_body.urdf")
+        pyrosim.Start_URDF("botfiles/snake_body.urdf")
 
         pyrosim.Send_Cube(
             name='body0',
@@ -54,7 +53,7 @@ class SNAKE(BUILDER):
         sensorNeurons = []
         hiddenNeurons = []
         
-        pyrosim.Start_NeuralNetwork("snake_brain.nndf")
+        pyrosim.Start_NeuralNetwork("botfiles/snake_brain.nndf")
         pyrosim.Send_Touch_Sensor_Neuron(name=0, linkName='body0')
         sensorNeurons.append(0)
         
