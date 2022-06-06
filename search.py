@@ -73,23 +73,25 @@ def select(population):
 
 ########################################################
 
-#generate initial robot
+#generate initial robot and variables
 population = []
 robot_type = "snake"
 
-population.append(CONTROLLER(robot_type))
+population.append(CONTROLLER(robot_type, 0))
 
-#generate parent hebbian parameter set
 parent_hebb = population[0].get_hebbian_parameters()
+id_iterator = 1
 
 #generate the rest of the population, base their hebbian parameters on the parent set
 for i in range(1, ep.pop_size):
     new_hebb, hebb_noise = create_new_hebbian_parameters(parent_hebb)
-    population.append(CONTROLLER(robot_type, input_parameters=[new_hebb, hebb_noise]))
+    population.append(CONTROLLER(robot_type, id_iterator, input_parameters=[new_hebb, hebb_noise]))
+    id_iterator += 1
 
+print(population)
 #evaluate all these robots
 for p in population:
-    p.evaluate()
+    p.evaluate(play_blind=0)
 
 #gradient the hebbian
 parent_hebb = step_hebbian(population, parent_hebb)

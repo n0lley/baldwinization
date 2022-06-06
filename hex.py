@@ -64,34 +64,34 @@ class HEX(BUILDER):
 
     
     
-    def make_brain(self, weights, hebb):
+    def make_brain(self, weights, hebb, filetag):
         motorNeurons = []
         sensorNeurons = []
         hiddenNeurons = []
         
-        pyrosim.Start_NeuralNetwork("quad_brain.nndf")
+        pyrosim.Start_NeuralNetwork("nnfiles/hex/hex_brain"+filetag+".nndf")
         
-        for i in range(4): #Touch sensors on leg ends
+        for i in range(6): #Touch sensors on leg ends
             sensorNeurons.append(i)
             pyrosim.Send_Touch_Sensor_Neuron(name=i, linkName='body%d'%(i+5))
 
-        for i in range(4, 8): #Proprioceptive sensors on hip joints
+        for i in range(6, 12): #Proprioceptive sensors on hip joints
             sensorNeurons.append(i)
             pyrosim.Send_Proprioceptive_Sensor_Neuron(name=i, jointName='body0_body%d'%(i-3))
         
-        for i in range(8, 12): #Proprioceptive sensors on knee joints
+        for i in range(12, 18): #Proprioceptive sensors on knee joints
             sensorNeurons.append(i)
             pyrosim.Send_Proprioceptive_Sensor_Neuron(name=i, jointName='body%d_body%d'%(i-7, i-3))
         
-        for i in range(12, 24):
+        for i in range(18, 36):
             hiddenNeurons.append(i)
             pyrosim.Send_Hidden_Neuron(name=i)
         
-        for i in range(24, 28): #Hip joint motors
+        for i in range(36, 42): #Hip joint motors
             motorNeurons.append(i)
             pyrosim.Send_Motor_Neuron(name=i, jointName='body0_body%d'%(i-23))
         
-        for i in range(28, 32): #Knee joint motors
+        for i in range(42, 48): #Knee joint motors
             motorNeurons.append(i)
             pyrosim.Send_Motor_Neuron(name=i, jointName='body%d_body%d'%(i-27, i-23))
        

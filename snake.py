@@ -48,12 +48,12 @@ class SNAKE(BUILDER):
             
         pyrosim.End()
 
-    def make_brain(self, weights, hebb):
+    def make_brain(self, weights, hebb, filetag):
         motorNeurons = []
         sensorNeurons = []
         hiddenNeurons = []
         
-        pyrosim.Start_NeuralNetwork("snake_brain.nndf")
+        pyrosim.Start_NeuralNetwork("nnfiles/snake/snake_brain"+filetag+".nndf")
         pyrosim.Send_Touch_Sensor_Neuron(name=0, linkName='body0')
         sensorNeurons.append(0)
         

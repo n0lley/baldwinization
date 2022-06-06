@@ -18,13 +18,13 @@ class SIMULATION:
         self.world = WORLD()
         self.robot = ROBOT(type)
 
-    def run(self, play_blind):
+    def run(self, play_blind, id_tag):
         for timestep in range(ep.sim_time):
             p.stepSimulation()
             self.robot.think()
             self.robot.act()
             if not play_blind: time.sleep(ep.dt)
-        self.robot.get_fitness()
+        self.robot.get_fitness(id_tag)
 
 
     def __del__(self):

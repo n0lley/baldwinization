@@ -8,7 +8,7 @@ from hex import HEX
 
 class CONTROLLER:
     
-    def __init__(self, type, input_parameters=None):
+    def __init__(self, type, id, input_parameters=None):
         """
         From provided robot type, calculate genome dimensions and generate a random nn genome of that size
         If no hebbian parameters are provided for use, generate a new set of hebbian parameters.
@@ -19,6 +19,7 @@ class CONTROLLER:
         self.hebbian_parameters = {}
         self.fitness = 0
         self.behavior = {}
+        self.ID = str(id)
 
         has_hebbs = True
         if input_parameters == None:
@@ -98,6 +99,9 @@ class CONTROLLER:
         return self.hebbian_noise
         
     def get_fitness(self):
+        f = open("fitnesses/fitness"+self.ID+".txt", 'r')
+        fits = f.read().strip().split('\n')
+        self.fitness = float(fits[-1])
         return self.fitness
     
     def Print(self):
@@ -105,8 +109,6 @@ class CONTROLLER:
             print(gene, ":", self.genome[gene])
 
     def evaluate(self, play_blind=1):
-        self.generator.make_brain(self.get_genome(), self.get_hebbian_parameters())
-        os.system("python3 simulate.py "+self.generator.get_type()+" "+str(play_blind))
-        f = open("fitnesses/fitness.txt", 'r')
-        fits = f.read().strip().split('\n')
-        self.fitness = float(fits[-1])
+        self.generator.make_brain(self.get_genome(), self.get_hebbian_parameters(), self.ID)
+        os.system("python3 simulate.py "+self.generator.get_type()+" "+str(play_blind)+" "+self.ID+" &")
+

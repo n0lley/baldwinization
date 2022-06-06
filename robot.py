@@ -31,9 +31,9 @@ class ROBOT:
                 desired_angle = self.nn.get_value_of(n)
                 self.motors[joint_name].set_value(self.robotId, desired_angle)
     
-    def get_fitness(self):
+    def get_fitness(self, id_tag):
         position = p.getLinkState(self.robotId, 0)[0]
         displacement = (position[0]**2 + position[1]**2)**.5
-        f = open("fitnesses/fitness.txt", 'w')
+        f = open("fitnesses/fitness"+str(id_tag)+".txt", 'w')
         f.write(str(displacement))
         f.close()
