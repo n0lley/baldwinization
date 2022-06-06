@@ -18,7 +18,6 @@ class CONTROLLER:
         self.genome = {}
         self.hebbian_parameters = {}
         self.fitness = 0
-        self.behavior = {}
         self.ID = str(id)
 
         has_hebbs = True
@@ -111,4 +110,3 @@ class CONTROLLER:
     def evaluate(self, play_blind=1):
         self.generator.make_brain(self.get_genome(), self.get_hebbian_parameters(), self.ID)
         os.system("python3 simulate.py "+self.generator.get_type()+" "+str(play_blind)+" "+self.ID+" &")
-

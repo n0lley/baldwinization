@@ -91,7 +91,7 @@ for i in range(1, ep.pop_size):
 print(population)
 #evaluate all these robots
 for p in population:
-    p.evaluate(play_blind=0)
+    p.evaluate()
 
 #gradient the hebbian
 parent_hebb = step_hebbian(population, parent_hebb)

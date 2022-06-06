@@ -86,7 +86,7 @@ class QUAD(BUILDER):
         sensorNeurons = []
         hiddenNeurons = []
         
-        pyrosim.Start_NeuralNetwork("nnfiles/quad/quad_brain"+filetag+".nndf")
+        pyrosim.Start_NeuralNetwork("nnfiles/quad_brain"+filetag+".nndf")
         
         for i in range(4): #Touch sensors on leg ends
             sensorNeurons.append(i)

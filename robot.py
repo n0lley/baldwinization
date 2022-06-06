@@ -1,10 +1,9 @@
 import pyrosim
 import pybullet as p
-import numpy as np
+import os
 
 from neuralNetwork import NEURAL_NETWORK
 from motor import MOTOR
-import experiment_parameters as ep
 
 class ROBOT:
     def __init__(self, robot_type, id_tag):
@@ -12,7 +11,7 @@ class ROBOT:
         self.motors = {}
         
         body_file = robot_type+"_body.urdf"
-        brain_file = "nnfiles/"+robot_type+"/"+robot_type + "_brain"+str(id_tag)+".nndf"
+        brain_file = "nnfiles/"+robot_type + "_brain"+id_tag+".nndf"
         
         self.robotId = p.loadURDF("/bodyfiles/"+body_file)
         pyrosim.Prepare_To_Simulate(self.robotId)
@@ -20,6 +19,8 @@ class ROBOT:
         
         for jointName in pyrosim.jointNamesToIndices:
             self.motors[jointName] = MOTOR(jointName)
+
+        os.system("rm "+brain_file)
             
     def think(self):
         self.nn.Update(self.robotId)
@@ -34,6 +35,6 @@ class ROBOT:
     def get_fitness(self, id_tag):
         position = p.getLinkState(self.robotId, 0)[0]
         displacement = (position[0]**2 + position[1]**2)**.5
-        f = open("fitnesses/fitness"+str(id_tag)+".txt", 'w')
+        f = open("fitnesses/fitness"+id_tag+".txt", 'w')
         f.write(str(displacement))
         f.close()

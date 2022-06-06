@@ -69,7 +69,7 @@ class HEX(BUILDER):
         sensorNeurons = []
         hiddenNeurons = []
         
-        pyrosim.Start_NeuralNetwork("nnfiles/hex/hex_brain"+filetag+".nndf")
+        pyrosim.Start_NeuralNetwork("nnfiles/hex_brain"+filetag+".nndf")
         
         for i in range(6): #Touch sensors on leg ends
             sensorNeurons.append(i)

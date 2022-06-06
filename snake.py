@@ -53,7 +53,7 @@ class SNAKE(BUILDER):
         sensorNeurons = []
         hiddenNeurons = []
         
-        pyrosim.Start_NeuralNetwork("nnfiles/snake/snake_brain"+filetag+".nndf")
+        pyrosim.Start_NeuralNetwork("nnfiles/snake_brain"+filetag+".nndf")
         pyrosim.Send_Touch_Sensor_Neuron(name=0, linkName='body0')
         sensorNeurons.append(0)
         
