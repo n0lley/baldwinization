@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import time
 
 import experiment_parameters as ep
 from snake import SNAKE
@@ -53,17 +54,20 @@ class CONTROLLER:
                     self.genome[(n1, n2)] = self.generate_gene()
                     if not has_hebbs:
                         self.hebbian_parameters[(n1, n2)] = self.generate_hebbian()
-                        self.hebbian_noise[(n1,n2)] = [0]*5
+                        self.hebbian_noise[(n1,n2)] = [0]*4
 
-    
     def generate_gene(self):
         """
-        Generates and returns a synaptic weight.
+        Generates and returns a synaptic weight + learning rate
         Should only be called at initialization
         """
         weight = (np.random.random()*2) - 1
         weight = round(weight, 6)
-        return weight
+
+        learning_rate = np.random.random()
+        learning_rate = round(learning_rate, 6)
+
+        return [weight, learning_rate]
 
     def generate_hebbian(self):
         """
@@ -71,7 +75,7 @@ class CONTROLLER:
         Should only be called at initialization and only if no parameters are provided.
         """
         parameter_set = []
-        for i in range(5):
+        for i in range(4):
             p = round(np.random.random()*2 - 1, 6)
             parameter_set.append(p)
 
@@ -83,10 +87,24 @@ class CONTROLLER:
         """
         for gene in self.genome:
             if np.random.random() < ep.mutation_prob:
+                #modify initial weight
                 self.genome[gene][0] = np.random.normal(loc = self.genome[gene][0])
                 self.genome[gene][0] = round(self.genome[gene][0], 6)
                 if self.genome[gene][0] < -1: self.genome[gene][0] = -1
                 elif self.genome[gene][0] > 1: self.genome[gene][0] = 1
+
+                #modify learning rate
+                self.genome[gene][1] = np.random.normal(loc = self.genome[gene][1])
+                self.genome[gene][1] = round(self.genome[gene][1], 6)
+                if self.genome[gene][1] < 0: self.genome[gene][1] = 0
+                elif self.genome[gene][1] > 1: self.genome[gene][1] = 1
+
+    def set_ID(self, new_ID):
+        self.ID = str(new_ID)
+
+    def set_hebbian_parameters(self, new_hebb, noise):
+        self.hebbian_parameters = new_hebb
+        self.hebbian_noise = noise
 
     def get_genome(self):
         return self.genome
@@ -98,15 +116,20 @@ class CONTROLLER:
         return self.hebbian_noise
         
     def get_fitness(self):
-        f = open("fitnesses/fitness"+self.ID+".txt", 'r')
-        fits = f.read().strip().split('\n')
-        self.fitness = float(fits[-1])
         return self.fitness
     
     def Print(self):
         for gene in self.genome:
             print(gene, ":", self.genome[gene])
 
-    def evaluate(self, play_blind=1):
+    def start_simulation(self, play_blind=1):
         self.generator.make_brain(self.get_genome(), self.get_hebbian_parameters(), self.ID)
         os.system("python3 simulate.py "+self.generator.get_type()+" "+str(play_blind)+" "+self.ID+" &")
+
+    def wait_to_finish(self):
+        while not os.path.exists("fitnesses/fitness"+self.ID+".txt"):
+            time.sleep(.001)
+        f = open("fitnesses/fitness"+self.ID+".txt", 'r')
+        fits = f.read().strip().split('\n')
+        self.fitness = float(fits[-1])
+        os.system("rm fitnesses/fitness"+self.ID+".txt")

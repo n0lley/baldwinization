@@ -18,7 +18,7 @@ def create_new_hebbian_parameters(parent_set):
     for synapse_name in child_set.keys(): #for each synapse we have params for, generate noise
         parameter_noise[synapse_name] = [np.random.normal(0, 1) for p in child_set[synapse_name]]
 
-        for i in range(5): #add the corresponding noise to all parameters, round decimal place.
+        for i in range(4): #add the corresponding noise to all parameters, round decimal place.
             child_set[synapse_name][i] += parameter_noise[synapse_name][i] * ep.hebbian_sigma
             child_set[synapse_name][i] = round(child_set[synapse_name][i], 6)
 
@@ -37,7 +37,7 @@ def step_hebbian(population, current_hebb):
 
     for key in hebbs_to_add[0]["params"].keys(): #for each synapse, create a sum of all parameter noise
 
-        sums = [0]*5 #accumulator
+        sums = [0]*4 #accumulator
         for hebb in hebbs_to_add:
             noise = hebb["noise"][key]
             weighted_noise = [n * hebb["fitness"] for n in noise] #weight noise by the fitness it produced
@@ -51,13 +51,6 @@ def step_hebbian(population, current_hebb):
     return next_hebb
 
 ##########  POPULATION-LEVEL METHODS  ###################
-
-def expand_population(population):
-    while len(population) < ep.pop_size + ep.num_children:
-        child = copy.deepcopy(np.random.choice(population[:ep.pop_size]))
-        child.mutate()
-        child.evaluate()
-        population.append(child)
         
 def select(population):
     population = sorted(population, key=ep.fitness_sort, reverse=True)
@@ -68,10 +61,16 @@ def select(population):
         winners = sorted(tournament, key=ep.fitness_sort, reverse=True)[:ep.tournament_winners]
         new_pop.extend(winners)
     
-    population = new_pop[:ep.pop_size]
+    return new_pop[:ep.pop_size]
         
 
 ########################################################
+#clear any old files
+os.system("rm nnfiles/*")
+os.system("rm fitnesses/*")
+
+#create population tracking
+pop_data = {}
 
 #generate initial robot and variables
 population = []
@@ -88,10 +87,49 @@ for i in range(1, ep.pop_size):
     population.append(CONTROLLER(robot_type, id_iterator, input_parameters=[new_hebb, hebb_noise]))
     id_iterator += 1
 
-print(population)
+pop_data[0] = population
+
 #evaluate all these robots
 for p in population:
-    p.evaluate()
+    p.start_simulation(play_blind=1)
+
+for p in population:
+    p.wait_to_finish()
 
 #gradient the hebbian
 parent_hebb = step_hebbian(population, parent_hebb)
+
+#do that again a bunch of times
+for i in range(1, ep.total_gens):
+    #reproduce
+    children = []
+    while len(children) < ep.num_children:
+        #clone a parent, set a new ID
+        parent = np.random.choice(population)
+        child = copy.deepcopy(parent)
+        child.set_ID(id_iterator)
+        id_iterator += 1
+
+        child.mutate() #mutate genome
+
+        #generate a new set of hebbian parameters from the parent set
+        new_hebb, hebb_noise = create_new_hebbian_parameters(parent_hebb)
+        child.set_hebbian_parameters(new_hebb, hebb_noise)
+
+        children.append(child)
+
+    #test the children
+    for c in children:
+        c.start_simulation(play_blind=1)
+    for c in children:
+        c.wait_to_finish()
+
+    population.extend(children)  #combine populations
+    population = select(population) #cull extras
+
+    parent_hebb = step_hebbian(population, parent_hebb) #step hebbian
+    pop_data[i] = population #record generation
+
+    print(i, population[0].get_fitness())
+
+

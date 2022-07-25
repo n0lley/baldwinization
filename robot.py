@@ -35,6 +35,7 @@ class ROBOT:
     def get_fitness(self, id_tag):
         position = p.getLinkState(self.robotId, 0)[0]
         displacement = (position[0]**2 + position[1]**2)**.5
-        f = open("fitnesses/fitness"+id_tag+".txt", 'w')
+        f = open("fitnesses/tmp"+id_tag+".txt", 'w')
         f.write(str(displacement))
         f.close()
+        os.system("mv fitnesses/tmp"+id_tag+".txt fitnesses/fitness"+id_tag+".txt")
