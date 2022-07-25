@@ -97,12 +97,16 @@ class HEX(BUILDER):
        
         for s in sensorNeurons:
             for h in hiddenNeurons:
-                w = weights[(s, h)]
-                pyrosim.Send_Synapse(sourceNeuronName=s, targetNeuronName=h, weight=w, learningRule=hebb[(s, h)])
+                w = weights[(s, h)][0]
+                learning_rule = [weights[(s, h)][1]] #grab synapse learning rate
+                learning_rule.extend(hebb[(s, h)]) #bundle with hebb rules
+                pyrosim.Send_Synapse(sourceNeuronName=s, targetNeuronName=h, weight=w, learningRule=learning_rule)
 
         for h in hiddenNeurons:
             for m in motorNeurons:
-                w = weights[(s, h)]
-                pyrosim.Send_Synapse(sourceNeuronName=h, targetNeuronName=m, weight=w, learningRule=hebb[(s, h)])
+                w = weights[(s, h)][0]
+                learning_rule = [weights[(s, h)][1]] #grab synapse learning rate
+                learning_rule.extend(hebb[(s, h)]) #bundle with hebb rules
+                pyrosim.Send_Synapse(sourceNeuronName=h, targetNeuronName=m, weight=w, learningRule=learning_rule)
         
         pyrosim.End()
