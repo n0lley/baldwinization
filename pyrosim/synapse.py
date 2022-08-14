@@ -33,6 +33,10 @@ class SYNAPSE:
     def Get_Learning_Rules(self):
         
         return self.learningRule
+
+    def Get_Weights_At_Each_Update(self):
+
+        return self.weightsAtEachUpdate
     
     def Update_Synapse(self, presynapticNeuron, postsynapticNeuron):
         

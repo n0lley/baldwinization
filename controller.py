@@ -1,6 +1,7 @@
 import numpy as np
 import os
 import time
+import pickle
 
 import experiment_parameters as ep
 from snake import SNAKE
@@ -24,10 +25,8 @@ class CONTROLLER:
         has_hebbs = True
         if input_parameters == None:
             has_hebbs = False
-            self.hebbian_noise = {}
         else:
-            self.hebbian_parameters = input_parameters[0]
-            self.hebbian_noise = input_parameters[1]
+            self.hebbian_parameters = input_parameters
 
         #Robot type genome dimensions - Each column has a range of integers indicating the id numbers of the neurons
         if type == "snake":
@@ -54,7 +53,6 @@ class CONTROLLER:
                     self.genome[(n1, n2)] = self.generate_gene()
                     if not has_hebbs:
                         self.hebbian_parameters[(n1, n2)] = self.generate_hebbian()
-                        self.hebbian_noise[(n1,n2)] = [0]*4
 
     def generate_gene(self):
         """
@@ -102,18 +100,14 @@ class CONTROLLER:
     def set_ID(self, new_ID):
         self.ID = str(new_ID)
 
-    def set_hebbian_parameters(self, new_hebb, noise):
+    def set_hebbian_parameters(self, new_hebb):
         self.hebbian_parameters = new_hebb
-        self.hebbian_noise = noise
 
     def get_genome(self):
         return self.genome
         
     def get_hebbian_parameters(self):
         return self.hebbian_parameters
-
-    def get_hebbian_noise(self):
-        return self.hebbian_noise
         
     def get_fitness(self):
         return self.fitness
@@ -133,3 +127,8 @@ class CONTROLLER:
         fits = f.read().strip().split('\n')
         self.fitness = float(fits[-1])
         os.system("rm fitnesses/fitness"+self.ID+".txt")
+
+        f = open("fitnesses/synapses"+self.ID+".p", 'rb')
+        self.synaptic_activity = pickle.load(f)
+        f.close()
+        os.system("rm fitnesses/synapses"+self.ID+".p")

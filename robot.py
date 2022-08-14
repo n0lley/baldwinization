@@ -1,8 +1,10 @@
 import pyrosim
 import pybullet as p
 import os
+import pickle
 
 from neuralNetwork import NEURAL_NETWORK
+import experiment_parameters as ep
 from motor import MOTOR
 
 class ROBOT:
@@ -29,13 +31,19 @@ class ROBOT:
         for n in self.nn.get_neuron_names():
             if self.nn.is_motor_neuron(n):
                 joint_name = self.nn.get_motor_neurons_joint(n)
-                desired_angle = self.nn.get_value_of(n)
+                desired_angle = self.nn.get_value_of(n) * ep.joint_range
                 self.motors[joint_name].set_value(self.robotId, desired_angle)
     
     def get_fitness(self, id_tag):
         position = p.getLinkState(self.robotId, 0)[0]
         displacement = (position[0]**2 + position[1]**2)**.5
+        synaptic_behavior = self.nn.get_synapse_activity()
         f = open("fitnesses/tmp"+id_tag+".txt", 'w')
         f.write(str(displacement))
         f.close()
+        f = open("fitnesses/synapses"+id_tag+".p", 'wb')
+        pickle.dump(synaptic_behavior, f)
+        f.close()
+
         os.system("mv fitnesses/tmp"+id_tag+".txt fitnesses/fitness"+id_tag+".txt")
+

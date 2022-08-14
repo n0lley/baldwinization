@@ -12,6 +12,10 @@ length = .5
 radius = length/10
 offset = radius/10
 
+joint_range = .5
+
+permitted_robot_types = ["snake", "quad", "hex"]
+
 #NETWORK PARAMETERS
 
 hebbian_alpha = .2
@@ -19,9 +23,9 @@ hebbian_sigma = .1
 
 #EVOLUTION PARAMETERS
 mutation_prob = .1
-total_gens = 20
-pop_size = 5
-num_children = 5
+total_gens = 200
+pop_size = 50
+num_children = 50
 tournament_size = 10
 tournament_winners = 3
 

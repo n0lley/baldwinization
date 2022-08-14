@@ -56,6 +56,13 @@ class NEURAL_NETWORK:
     def get_value_of(self, neuron_name):
         return self.neurons[neuron_name].Get_Value()
 
+    def get_synapse_activity(self):
+        synapse_activity = {}
+        for s in self.synapses:
+            synapse_activity[s] = self.synapses[s].Get_Weights_At_Each_Update()
+
+        return synapse_activity
+
 # ---------------- Private methods --------------------------------------
 
     def Add_Neuron_According_To(self,line):

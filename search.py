@@ -1,6 +1,8 @@
 import os
 import copy
 import numpy as np
+import sys
+import pickle
 
 import experiment_parameters as ep
 from controller import CONTROLLER
@@ -22,7 +24,7 @@ def create_new_hebbian_parameters(parent_set):
             child_set[synapse_name][i] += parameter_noise[synapse_name][i] * ep.hebbian_sigma
             child_set[synapse_name][i] = round(child_set[synapse_name][i], 6)
 
-    return child_set, parameter_noise
+    return child_set
 
 def step_hebbian(population, current_hebb):
     """
@@ -33,13 +35,13 @@ def step_hebbian(population, current_hebb):
     hebbs_to_add = []
     next_hebb = {}
     for p in population:
-        hebbs_to_add.append({"fitness":p.get_fitness(), "params":p.get_hebbian_parameters(), "noise":p.get_hebbian_noise()})
+        hebbs_to_add.append({"fitness":p.get_fitness(), "params":p.get_hebbian_parameters()})
 
     for key in hebbs_to_add[0]["params"].keys(): #for each synapse, create a sum of all parameter noise
 
         sums = [0]*4 #accumulator
         for hebb in hebbs_to_add:
-            noise = hebb["noise"][key]
+            noise = [current_hebb[key][i] - hebb["params"][key][i] for i in range(4)]
             weighted_noise = [n * hebb["fitness"] for n in noise] #weight noise by the fitness it produced
             sums = np.add(sums, weighted_noise) #add weighted noises to total
 
@@ -74,7 +76,9 @@ pop_data = {}
 
 #generate initial robot and variables
 population = []
-robot_type = "snake"
+robot_type = sys.argv[1]
+assert robot_type.lower() in ep.permitted_robot_types, "Robot type not recognized."
+np.random.seed(int(sys.argv[2]))
 
 population.append(CONTROLLER(robot_type, 0))
 
@@ -83,8 +87,8 @@ id_iterator = 1
 
 #generate the rest of the population, base their hebbian parameters on the parent set
 for i in range(1, ep.pop_size):
-    new_hebb, hebb_noise = create_new_hebbian_parameters(parent_hebb)
-    population.append(CONTROLLER(robot_type, id_iterator, input_parameters=[new_hebb, hebb_noise]))
+    new_hebb = create_new_hebbian_parameters(parent_hebb)
+    population.append(CONTROLLER(robot_type, id_iterator, input_parameters=new_hebb))
     id_iterator += 1
 
 pop_data[0] = population
@@ -113,8 +117,8 @@ for i in range(1, ep.total_gens):
         child.mutate() #mutate genome
 
         #generate a new set of hebbian parameters from the parent set
-        new_hebb, hebb_noise = create_new_hebbian_parameters(parent_hebb)
-        child.set_hebbian_parameters(new_hebb, hebb_noise)
+        new_hebb = create_new_hebbian_parameters(parent_hebb)
+        child.set_hebbian_parameters(new_hebb)
 
         children.append(child)
 
@@ -132,4 +136,6 @@ for i in range(1, ep.total_gens):
 
     print(i, population[0].get_fitness())
 
-
+f = open("data/"+sys.argv[2]+".p", "wb")
+pickle.dump(pop_data, f)
+f.close()
