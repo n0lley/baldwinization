@@ -1,4 +1,4 @@
-import pyrosim
+from pyrosim import pyrosim
 
 from builder import BUILDER
 import experiment_parameters as ep

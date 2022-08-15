@@ -2,9 +2,9 @@ import math
 
 import pybullet
 
-import pyrosim as pyrosim
+import pyrosim.pyrosim as pyrosim
 
-import constants as c
+import pyrosim.constants as c
 
 import math
 

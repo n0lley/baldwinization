@@ -118,7 +118,7 @@ class CONTROLLER:
 
     def start_simulation(self, play_blind=1):
         self.generator.make_brain(self.get_genome(), self.get_hebbian_parameters(), self.ID)
-        os.system("python3 simulate.py "+self.generator.get_type()+" "+str(play_blind)+" "+self.ID+" 2&>1 &")
+        os.system("python3 simulate.py "+self.generator.get_type()+" "+str(play_blind)+" "+self.ID+"  &")
 
     def wait_to_finish(self):
         while not os.path.exists("fitnesses/fitness"+self.ID+".txt"):

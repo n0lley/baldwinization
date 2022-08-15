@@ -1,9 +1,9 @@
-import pyrosim
+from pyrosim import pyrosim
 import pybullet as p
 import os
 import pickle
 
-from neuralNetwork import NEURAL_NETWORK
+from pyrosim.neuralNetwork import NEURAL_NETWORK
 import experiment_parameters as ep
 from motor import MOTOR
 

@@ -1,6 +1,6 @@
-from neuron  import NEURON
+from pyrosim.neuron  import NEURON
 
-from synapse import SYNAPSE
+from pyrosim.synapse import SYNAPSE
 
 class NEURAL_NETWORK: 
 

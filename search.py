@@ -71,9 +71,6 @@ def select(population):
 os.system("rm nnfiles/*")
 os.system("rm fitnesses/*")
 
-#create population tracking
-pop_data = {}
-
 #generate initial robot and variables
 population = []
 robot_type = sys.argv[1]
@@ -91,8 +88,6 @@ for i in range(1, ep.pop_size):
     population.append(CONTROLLER(robot_type, id_iterator, input_parameters=new_hebb))
     id_iterator += 1
 
-pop_data[0] = population
-
 #evaluate all these robots
 for p in population:
     p.start_simulation(play_blind=1)
@@ -102,6 +97,11 @@ for p in population:
 
 #gradient the hebbian
 parent_hebb = step_hebbian(population, parent_hebb)
+
+os.mkdir("data/"+sys.argv[2])
+f = open("data/"+sys.argv[2]+"/0.p", "wb")
+pickle.dump(population, f)
+f.close()
 
 #do that again a bunch of times
 for i in range(1, ep.total_gens):
@@ -132,10 +132,9 @@ for i in range(1, ep.total_gens):
     population = select(population) #cull extras
 
     parent_hebb = step_hebbian(population, parent_hebb) #step hebbian
-    pop_data[i] = population #record generation
 
     print(i, population[0].get_fitness())
 
-f = open("data/"+sys.argv[2]+".p", "wb")
-pickle.dump(pop_data, f)
-f.close()
+    f = open("data/"+sys.argv[2]+"/"+str(i)+".p", "wb")
+    pickle.dump(population, f)
+    f.close()

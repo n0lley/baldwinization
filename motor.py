@@ -1,4 +1,4 @@
-import pyrosim
+from pyrosim import pyrosim
 import pybullet as p
 import numpy as np
 import math

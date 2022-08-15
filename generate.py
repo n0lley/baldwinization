@@ -1,9 +1,10 @@
-import pyrosim
+from pyrosim import pyrosim
 import os
 
 from snake import SNAKE
 from quad import QUAD
 from hex import HEX
+import experiment_parameters as ep
 
 def create_world():
     pyrosim.Start_SDF("bodyfiles/world.sdf")
@@ -17,13 +18,11 @@ def create_bodies():
     hex = HEX()
     hex.make_body()
 
-robot_types = ["snake", "quad", "hex"]
-
 if not os.path.exists("./bodyfiles"):
     os.mkdir("bodyfiles")
 if not os.path.exists("./nnfiles"):
     os.mkdir("nnfiles")
-for r in robot_types:
+for r in ep.permitted_robot_types:
     if not os.path.exists("./nnfiles/"+r):
         os.mkdir("./nnfiles/"+r)
 create_world()

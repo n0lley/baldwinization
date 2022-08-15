@@ -1,8 +1,8 @@
-from masssdf         import MASS_SDF
+from pyrosim.masssdf         import MASS_SDF
 
-from inertiasdf      import INERTIA_SDF
+from pyrosim.inertiasdf      import INERTIA_SDF
 
-from commonFunctions import Save_Whitespace
+from pyrosim.commonFunctions import Save_Whitespace
 
 class INERTIAL_SDF:
 
