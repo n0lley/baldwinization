@@ -3,6 +3,7 @@ import copy
 import numpy as np
 import sys
 import pickle
+import time
 
 import experiment_parameters as ep
 from controller import CONTROLLER
@@ -83,6 +84,7 @@ parent_hebb = population[0].get_hebbian_parameters()
 id_iterator = 1
 
 #generate the rest of the population, base their hebbian parameters on the parent set
+t0 = time.time()
 for i in range(1, ep.pop_size):
     new_hebb = create_new_hebbian_parameters(parent_hebb)
     population.append(CONTROLLER(robot_type, id_iterator, input_parameters=new_hebb))
@@ -133,7 +135,8 @@ for i in range(1, ep.total_gens):
 
     parent_hebb = step_hebbian(population, parent_hebb) #step hebbian
 
-    print(i, population[0].get_fitness())
+    print("generation",i, "fitness", population[0].get_fitness(), "in", time.time()-t0,"seconds")
+    t0 = time.time()
 
     f = open("data/"+sys.argv[2]+"/"+str(i)+".p", "wb")
     pickle.dump(population, f)
