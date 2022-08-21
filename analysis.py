@@ -15,9 +15,23 @@ for i in range(len(os.listdir(path))):
     f.close()
 
 synapse_variances = []
+keys_to_variances = {}
 for i in populations:
     synapse_values = populations[i][0].synaptic_activity
-    synapse_variances.append(numpy.var(synapse_values))
+    for key in synapse_values:
+        if key not in keys_to_variances.keys():
+            keys_to_variances[key] = [numpy.var(synapse_values[key])]
+        else:
+            keys_to_variances[key].append(numpy.var(synapse_values[key]))
 
-plt.scatter(populations.keys(), synapse_variances)
+for key in keys_to_variances.keys():
+    plt.scatter(populations.keys(), keys_to_variances[key], label=key)
+plt.legend()
+plt.show()
+
+fitnesses = []
+for i in populations:
+    fitnesses.append(populations[i][0].fitness)
+
+plt.plot(populations.keys(), fitnesses)
 plt.show()

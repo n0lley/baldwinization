@@ -68,15 +68,18 @@ def select(population):
         
 
 ########################################################
+seed = sys.argv[2] #establish random seed
+np.random.seed(int(seed))
+
 #clear any old files
 os.system("rm nnfiles/*")
-os.system("rm fitnesses/*")
+os.system("rm "+seed+"/*")
+os.system("mkdir "+seed)
 
 #generate initial robot and variables
 population = []
 robot_type = sys.argv[1]
 assert robot_type.lower() in ep.permitted_robot_types, "Robot type not recognized."
-np.random.seed(int(sys.argv[2]))
 
 population.append(CONTROLLER(robot_type, 0))
 
@@ -92,15 +95,15 @@ for i in range(1, ep.pop_size):
 
 #evaluate all these robots
 for p in population:
-    p.start_simulation(play_blind=1)
+    p.start_simulation(seed, play_blind=1)
 
 for p in population:
-    p.wait_to_finish()
+    p.wait_to_finish(seed)
 
 #gradient the hebbian
 parent_hebb = step_hebbian(population, parent_hebb)
 
-os.mkdir("data/"+sys.argv[2])
+os.system("mkdir data/"+sys.argv[2])
 f = open("data/"+sys.argv[2]+"/0.p", "wb")
 pickle.dump(population, f)
 f.close()
@@ -126,9 +129,9 @@ for i in range(1, ep.total_gens):
 
     #test the children
     for c in children:
-        c.start_simulation(play_blind=1)
+        c.start_simulation(seed, play_blind=1)
     for c in children:
-        c.wait_to_finish()
+        c.wait_to_finish(seed)
 
     population.extend(children)  #combine populations
     population = select(population) #cull extras
@@ -141,3 +144,5 @@ for i in range(1, ep.total_gens):
     f = open("data/"+sys.argv[2]+"/"+str(i)+".p", "wb")
     pickle.dump(population, f)
     f.close()
+
+os.system("rmdir "+seed)
