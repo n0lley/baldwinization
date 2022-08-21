@@ -35,18 +35,15 @@ class ROBOT:
                 self.motors[joint_name].set_value(self.robotId, desired_angle)
     
     def get_fitness(self, id_tag, seed):
-        print(seed+"/tmp"+id_tag+".txt")
         position = p.getLinkState(self.robotId, 0)[0]
         displacement = (position[0]**2 + position[1]**2)**.5
         synaptic_behavior = self.nn.get_synapse_activity()
         f = open(seed+"/tmp"+id_tag+".txt", 'w')
         f.write(str(displacement))
         f.close()
-        print(seed+"/tmp"+id_tag+".txt")
         f = open(seed+"/synapses"+id_tag+".p", 'wb')
         pickle.dump(synaptic_behavior, f)
         f.close()
 
         os.system("mv "+seed+"/tmp"+id_tag+".txt "+seed+"/fitness"+id_tag+".txt")
-        print(seed+"/tmp"+id_tag+".txt")
 
