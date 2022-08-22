@@ -153,8 +153,8 @@ for i in range(1, ep.total_gens):
         c.start_simulation(seed, play_blind=1)
     for c in children:
         c.wait_to_finish(seed)
-    f = open(seed + "_population_simtime.txt", "a")
-    f.write(str(time.time() - t0)+"\n")
+    f = open(seed + "_full_pop_simulation.txt", "a")
+    f.write(str(time.time() - t0) + "\n")
     f.close()
 
     population.extend(children)  #combine populations
