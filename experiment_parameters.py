@@ -12,7 +12,7 @@ length = .5
 radius = length/10
 offset = radius/10
 
-joint_range = .5
+joint_range = .3
 
 permitted_robot_types = ["snake", "quad", "hex"]
 
