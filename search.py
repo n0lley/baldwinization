@@ -150,3 +150,4 @@ for i in range(1, ep.total_gens):
     f.close()
 
 os.system("rmdir "+seed)
+os.system("rm "+seed+".out")
