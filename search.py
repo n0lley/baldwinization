@@ -87,12 +87,13 @@ parent_hebb = population[0].get_hebbian_parameters()
 id_iterator = 1
 
 #generate the rest of the population, base their hebbian parameters on the parent set
-t0 = time.time()
+
 for i in range(1, ep.pop_size):
     new_hebb = create_new_hebbian_parameters(parent_hebb)
     population.append(CONTROLLER(robot_type, id_iterator, input_parameters=new_hebb))
     id_iterator += 1
 
+t0 = time.time()
 #evaluate all these robots
 for p in population:
     p.start_simulation(seed, play_blind=1)
@@ -100,20 +101,35 @@ for p in population:
 for p in population:
     p.wait_to_finish(seed)
 
+f = open(seed + "_full_pop_simulation.txt", "a")
+f.write(str(time.time() - t0)+"\n")
+f.close()
+
+t0 = time.time()
 #gradient the hebbian
 parent_hebb = step_hebbian(population, parent_hebb)
+f = open(seed + "_hebbian_gradient.txt", "a")
+f.write(str(time.time() - t0)+"\n")
+f.close()
+t0 = time.time()
 
 os.system("mkdir data/"+sys.argv[2])
 f = open("data/"+sys.argv[2]+"/0.p", "wb")
 pickle.dump(population, f)
 f.close()
 
-print_string = "generation 0 fitness " + str(round(population[0].get_fitness(), 3)) + " in " + str(int(time.time() - t0)) + " seconds"
-os.system("echo " + print_string)
+f = open(seed + "_brain_building.txt", "a")
+f.write('GENERATION 0 END'+"\n")
+f.close()
+f = open(seed + "_fitness_write.txt", "a")
+f.write('GENERATION 0 END'+"\n")
+f.close()
+f = open(seed + "_individual_simtime.txt", "a")
+f.write('GENERATION 0 END'+"\n")
+f.close()
 
 #do that again a bunch of times
 for i in range(1, ep.total_gens):
-    t0 = time.time()
     #reproduce
     children = []
     while len(children) < ep.num_children:
@@ -131,22 +147,37 @@ for i in range(1, ep.total_gens):
 
         children.append(child)
 
+    t0 = time.time()
     #test the children
     for c in children:
         c.start_simulation(seed, play_blind=1)
     for c in children:
         c.wait_to_finish(seed)
+    f = open(seed + "_population_simtime.txt", "a")
+    f.write(str(time.time() - t0)+"\n")
+    f.close()
 
     population.extend(children)  #combine populations
     population = select(population) #cull extras
 
+    t0 = time.time()
     parent_hebb = step_hebbian(population, parent_hebb) #step hebbian
-
-    print_string = "generation " + str(i) + " fitness " + str(round(population[0].get_fitness(), 3)) + " in " + str(int(time.time() - t0)) + " seconds"
-    os.system("echo "+print_string)
+    f = open(seed + "_hebbian_gradient.txt", "a")
+    f.write(str(time.time() - t0)+"\n")
+    f.close()
 
     f = open("data/"+sys.argv[2]+"/"+str(i)+".p", "wb")
     pickle.dump(population, f)
+    f.close()
+
+    f = open(seed + "_brain_building.txt", "a")
+    f.write('GENERATION '+str(i)+' END'+"\n")
+    f.close()
+    f = open(seed + "_fitness_write.txt", "a")
+    f.write('GENERATION '+str(i)+' END'+"\n")
+    f.close()
+    f = open(seed + "_individual_simtime.txt", "a")
+    f.write('GENERATION '+str(i)+' END'+"\n")
     f.close()
 
 os.system("rmdir "+seed)

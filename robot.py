@@ -2,6 +2,7 @@ from pyrosim import pyrosim
 import pybullet as p
 import os
 import pickle
+import time
 
 from pyrosim.neuralNetwork import NEURAL_NETWORK
 import experiment_parameters as ep
@@ -38,6 +39,7 @@ class ROBOT:
         position = p.getLinkState(self.robotId, 0)[0]
         displacement = (position[0]**2 + position[1]**2)**.5
         synaptic_behavior = self.nn.get_synapse_activity()
+        t0 = time.time()
         f = open(seed+"/tmp"+id_tag+".txt", 'w')
         f.write(str(displacement))
         f.close()
@@ -46,4 +48,6 @@ class ROBOT:
         f.close()
 
         os.system("mv "+seed+"/tmp"+id_tag+".txt "+seed+"/fitness"+id_tag+".txt")
-
+        f = open(seed+"_fitness_write.txt", 'a')
+        f.write(str(time.time() - t0)+"\n")
+        f.close()
