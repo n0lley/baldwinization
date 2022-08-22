@@ -122,11 +122,7 @@ class CONTROLLER:
         f = open(seed+"_brain_building.txt", "a")
         f.write(str(time.time() - t0)+"\n")
         f.close()
-        t0 = time.time()
         os.system("python3 simulate.py "+self.generator.get_type()+" "+str(play_blind)+" "+self.ID+" "+seed+" 2&>"+seed+".out &")
-        f = open(seed + "_individual_simtime.txt", "a")
-        f.write(str(time.time() - t0)+"\n")
-        f.close()
 
     def wait_to_finish(self, seed):
         while not os.path.exists(seed+"/fitness"+self.ID+".txt"):
