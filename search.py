@@ -108,7 +108,7 @@ f = open("data/"+sys.argv[2]+"/0.p", "wb")
 pickle.dump(population, f)
 f.close()
 
-print_string = "generation " + str(i) + " fitness " + str(round(population[0].get_fitness(), .3)) + " in " + str(int(time.time() - t0)),  + " seconds"
+print_string = "generation 0 fitness " + str(round(population[0].get_fitness(), 3)) + " in " + str(int(time.time() - t0)) + " seconds"
 os.system("echo " + print_string)
 
 #do that again a bunch of times
@@ -142,7 +142,7 @@ for i in range(1, ep.total_gens):
 
     parent_hebb = step_hebbian(population, parent_hebb) #step hebbian
 
-    print_string = "generation " + str(i) + " fitness " + str(round(population[0].get_fitness(), .3)) + " in " + str(int(time.time() - t0)),  + " seconds"
+    print_string = "generation " + str(i) + " fitness " + str(round(population[0].get_fitness(), 3)) + " in " + str(int(time.time() - t0)) + " seconds"
     os.system("echo "+print_string)
 
     f = open("data/"+sys.argv[2]+"/"+str(i)+".p", "wb")
