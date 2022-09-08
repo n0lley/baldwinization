@@ -7,7 +7,7 @@ from robot import ROBOT
 import experiment_parameters as ep
 
 class SIMULATION:
-    def __init__(self, type, play_blind, id_tag):
+    def __init__(self, type, play_blind, id_tag, seed):
         t0 = time.time()
         play_blind = int(play_blind)
         if play_blind:
