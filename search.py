@@ -93,7 +93,6 @@ for i in range(1, ep.pop_size):
     population.append(CONTROLLER(robot_type, id_iterator, input_parameters=new_hebb))
     id_iterator += 1
 
-t0 = time.time()
 #evaluate all these robots
 for p in population:
     p.start_simulation(seed, play_blind=1)
@@ -101,30 +100,27 @@ for p in population:
 for p in population:
     p.wait_to_finish(seed)
 
-f = open(seed + "_full_pop_simulation.txt", "a")
-f.write(str(time.time() - t0)+"\n")
-f.close()
-
-t0 = time.time()
 #gradient the hebbian
 parent_hebb = step_hebbian(population, parent_hebb)
-f = open(seed + "_hebbian_gradient.txt", "a")
-f.write(str(time.time() - t0)+"\n")
-f.close()
-t0 = time.time()
 
 os.system("mkdir data/"+sys.argv[2])
 f = open("data/"+sys.argv[2]+"/0.p", "wb")
 pickle.dump(population, f)
 f.close()
 
-f = open(seed + "_brain_building.txt", "a")
-f.write('GENERATION 0 END'+"\n")
-f.close()
-f = open(seed + "_fitness_write.txt", "a")
+f = open(seed + "_simulation_init.txt", "a")
 f.write('GENERATION 0 END'+"\n")
 f.close()
 f = open(seed + "_individual_simtime.txt", "a")
+f.write('GENERATION 0 END'+"\n")
+f.close()
+f = open(seed+"_simulation_step.txt", "a")
+f.write('GENERATION 0 END'+"\n")
+f.close()
+f = open(seed+"_robot_think.txt", "a")
+f.write('GENERATION 0 END'+"\n")
+f.close()
+f = open(seed+"_robot_act.txt", "a")
 f.write('GENERATION 0 END'+"\n")
 f.close()
 
@@ -147,36 +143,34 @@ for i in range(1, ep.total_gens):
 
         children.append(child)
 
-    t0 = time.time()
     #test the children
     for c in children:
         c.start_simulation(seed, play_blind=1)
     for c in children:
         c.wait_to_finish(seed)
-    f = open(seed + "_full_pop_simulation.txt", "a")
-    f.write(str(time.time() - t0) + "\n")
-    f.close()
 
     population.extend(children)  #combine populations
     population = select(population) #cull extras
 
-    t0 = time.time()
     parent_hebb = step_hebbian(population, parent_hebb) #step hebbian
-    f = open(seed + "_hebbian_gradient.txt", "a")
-    f.write(str(time.time() - t0)+"\n")
-    f.close()
 
     f = open("data/"+sys.argv[2]+"/"+str(i)+".p", "wb")
     pickle.dump(population, f)
     f.close()
 
-    f = open(seed + "_brain_building.txt", "a")
-    f.write('GENERATION '+str(i)+' END'+"\n")
-    f.close()
-    f = open(seed + "_fitness_write.txt", "a")
+    f = open(seed + "_simulation_init.txt", "a")
     f.write('GENERATION '+str(i)+' END'+"\n")
     f.close()
     f = open(seed + "_individual_simtime.txt", "a")
+    f.write('GENERATION '+str(i)+' END'+"\n")
+    f.close()
+    f = open(seed + "_simulation_step.txt", "a")
+    f.write('GENERATION '+str(i)+' END'+"\n")
+    f.close()
+    f = open(seed + "_robot_think.txt", "a")
+    f.write('GENERATION '+str(i)+' END'+"\n")
+    f.close()
+    f = open(seed + "_robot_act.txt", "a")
     f.write('GENERATION '+str(i)+' END'+"\n")
     f.close()
 
