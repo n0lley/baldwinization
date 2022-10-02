@@ -95,14 +95,13 @@ for i in range(1, ep.pop_size):
     id_iterator += 1
 
 #evaluate all these robots
-t0 = time.time()
 for p in population:
     p.start_simulation(seed, play_blind=1)
 
 for p in population:
     p.wait_to_finish(seed)
-f = open("timedata/fullpoptime.txt", 'w')
-f.write(str(time.time() - t0) + ' 0\n')
+f = open("timedata/individual_simtime.txt", 'a')
+f.write('GEN 0\n')
 f.close()
 
 #gradient the hebbian
@@ -138,8 +137,8 @@ for i in range(1, ep.total_gens):
         c.start_simulation(seed, play_blind=1)
     for c in children:
         c.wait_to_finish(seed)
-    f = open("timedata/fullpoptime.txt", 'a')
-    f.write(str(time.time() - t0) + " " + str(i) + "\n")
+    f = open("timedata/individual_simtime.txt", 'a')
+    f.write("GEN " + str(i) + "\n")
     f.close()
 
     population.extend(children)  #combine populations

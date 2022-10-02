@@ -1,5 +1,6 @@
 import pybullet as p
 import pybullet_data
+import time
 
 from world import WORLD
 from robot import ROBOT
@@ -18,12 +19,16 @@ class SIMULATION:
         self.robot = ROBOT(type, id_tag)
 
     def run(self, play_blind, id_tag, seed):
+        t0 = time.time()
         for timestep in range(ep.sim_time):
             p.stepSimulation()
             self.robot.think()
             self.robot.act()
             if not play_blind: time.sleep(ep.dt)
         self.robot.get_fitness(id_tag, seed)
+        f = open("timedata/individual_simtime.txt", "a")
+        f.write(str(time.time() - t0) + "\n")
+        f.close()
 
     def __del__(self):
         p.disconnect()
