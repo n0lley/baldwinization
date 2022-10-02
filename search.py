@@ -75,6 +75,7 @@ np.random.seed(int(seed))
 os.system("rm nnfiles/*")
 os.system("rm "+seed+"/*")
 os.system("mkdir "+seed)
+os.system("mkdir timedata")
 
 #generate initial robot and variables
 population = []
@@ -94,11 +95,15 @@ for i in range(1, ep.pop_size):
     id_iterator += 1
 
 #evaluate all these robots
+t0 = time.time()
 for p in population:
     p.start_simulation(seed, play_blind=1)
 
 for p in population:
     p.wait_to_finish(seed)
+f = open("timedata/fullpoptime.txt", 'w')
+f.write(str(time.time() - t0) + ' 0\n')
+f.close()
 
 #gradient the hebbian
 parent_hebb = step_hebbian(population, parent_hebb)
@@ -106,13 +111,6 @@ parent_hebb = step_hebbian(population, parent_hebb)
 os.system("mkdir data/"+sys.argv[2])
 f = open("data/"+sys.argv[2]+"/0.p", "wb")
 pickle.dump(population, f)
-f.close()
-
-f = open(seed + "_individual_simtime.txt", "a")
-f.write('GENERATION 0 END'+"\n")
-f.close()
-f = open(seed+"_robot_think.txt", "a")
-f.write('GENERATION 0 END'+"\n")
 f.close()
 
 #do that again a bunch of times
@@ -135,10 +133,14 @@ for i in range(1, ep.total_gens):
         children.append(child)
 
     #test the children
+    t0 = time.time()
     for c in children:
         c.start_simulation(seed, play_blind=1)
     for c in children:
         c.wait_to_finish(seed)
+    f = open("timedata/fullpoptime.txt", 'a')
+    f.write(str(time.time() - t0) + " " + str(i) + "\n")
+    f.close()
 
     population.extend(children)  #combine populations
     population = select(population) #cull extras
@@ -149,12 +151,5 @@ for i in range(1, ep.total_gens):
     pickle.dump(population, f)
     f.close()
 
-    f = open(seed + "_individual_simtime.txt", "a")
-    f.write('GENERATION '+str(i)+' END'+"\n")
-    f.close()
-    f = open(seed + "_robot_think.txt", "a")
-    f.write('GENERATION '+str(i)+' END'+"\n")
-    f.close()
-
 os.system("rmdir "+seed)
-os.system("rm "+seed+".out")
+os.system("rm "+seed+".txt")

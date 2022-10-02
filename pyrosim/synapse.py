@@ -39,7 +39,6 @@ class SYNAPSE:
         return self.weightsAtEachUpdate
     
     def Update_Synapse(self, presynapticNeuron, postsynapticNeuron):
-        
         rate = self.learningRule[0]
         A = self.learningRule[1]
         B = self.learningRule[2]
@@ -56,7 +55,7 @@ class SYNAPSE:
             self.weight = 1
         elif self.weight < -1:
             self.weight = -1
-        
+
         self.weightsAtEachUpdate.append(self.Get_Weight())
 
 # -------------------------- Private methods -------------------------

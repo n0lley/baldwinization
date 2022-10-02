@@ -2,6 +2,8 @@ from pyrosim.neuron  import NEURON
 
 from pyrosim.synapse import SYNAPSE
 
+import time
+
 class NEURAL_NETWORK: 
 
     def __init__(self,nndfFileName, do_hebbian=True):
@@ -38,11 +40,9 @@ class NEURAL_NETWORK:
                 self.neurons[n].Update_Sensor_Neuron(robotId)
             else:
                 self.neurons[n].Update_Hidden_Or_Motor_Neuron(self.neurons, self.synapses)
-    
         for s in self.synapses:
             if self.do_hebbian:
                 self.synapses[s].Update_Synapse(self.neurons[s[0]], self.neurons[s[1]])
-            
                 
     def get_neuron_names(self):
         return self.neurons.keys()
@@ -60,7 +60,6 @@ class NEURAL_NETWORK:
         synapse_activity = {}
         for s in self.synapses:
             synapse_activity[s] = self.synapses[s].Get_Weights_At_Each_Update()
-
         return synapse_activity
 
 # ---------------- Private methods --------------------------------------
