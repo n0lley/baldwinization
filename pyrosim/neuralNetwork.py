@@ -35,20 +35,20 @@ class NEURAL_NETWORK:
         print("")
     
     def Update(self, robotId):
-        f = open("timedata/nntimes.txt", 'a')
-        t0 = time.time()
+        f = open("timedata/synapsetimes.txt", 'a')
         for n in self.neurons:
             if self.neurons[n].Is_Sensor_Neuron():
                 self.neurons[n].Update_Sensor_Neuron(robotId)
             else:
                 self.neurons[n].Update_Hidden_Or_Motor_Neuron(self.neurons, self.synapses)
-        neurontime = time.time() - t0
-        t0 = time.time()
-        for s in self.synapses:
-            if self.do_hebbian:
+
+        if self.do_hebbian:
+            for s in self.synapses:
+                t0 = time.time()
                 self.synapses[s].Update_Synapse(self.neurons[s[0]], self.neurons[s[1]])
-        synapsetime = time.time() - t0
-        f.write(str(neurontime) + "\t" + str(synapsetime) + "\n")
+                synapsetime = time.time() - t0
+                f.write(str(synapsetime) + "\n")
+
         f.close()
                 
     def get_neuron_names(self):
