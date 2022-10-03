@@ -1,9 +1,9 @@
 import pybullet as p
 import pybullet_data
+import time
 
 from world import WORLD
 from robot import ROBOT
-import time
 import experiment_parameters as ep
 
 class SIMULATION:
@@ -19,20 +19,12 @@ class SIMULATION:
         self.robot = ROBOT(type, id_tag)
 
     def run(self, play_blind, id_tag, seed):
-        f = open("timedata/timesteptimes.txt", 'a')
         for timestep in range(ep.sim_time):
-            t0 = time.time()
             p.stepSimulation()
-            simstep = time.time() - t0
-            t0 = time.time()
             self.robot.think()
-            robotthink = time.time() - t0
-            t0 = time.time()
             self.robot.act()
-            robotact = time.time() - t0
-            f.write(str(simstep) + "\t" + str(robotthink) + "\t" + str(robotact) + "\n")
             if not play_blind: time.sleep(ep.dt)
-        f.close()
+
         self.robot.get_fitness(id_tag, seed)
 
     def __del__(self):

@@ -100,7 +100,7 @@ for p in population:
 
 for p in population:
     p.wait_to_finish(seed)
-f = open("timedata/timesteptimes.txt", 'a')
+f = open("timedata/nntimes.txt", 'a')
 f.write('GEN 0\n')
 f.close()
 
@@ -137,7 +137,7 @@ for i in range(1, ep.total_gens):
         c.start_simulation(seed, play_blind=1)
     for c in children:
         c.wait_to_finish(seed)
-    f = open("timedata/timesteptimes.txt", 'a')
+    f = open("timedata/nntimes.txt", 'a')
     f.write("GEN " + str(i) + "\n")
     f.close()
 
