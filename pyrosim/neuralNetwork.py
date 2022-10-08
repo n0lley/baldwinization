@@ -35,7 +35,7 @@ class NEURAL_NETWORK:
         print("")
     
     def Update(self, robotId):
-        f = open("timedata/synapsetimes.txt", 'a')
+        f = open("timedata/updatesynapsetimes.txt", 'a')
         for n in self.neurons:
             if self.neurons[n].Is_Sensor_Neuron():
                 self.neurons[n].Update_Sensor_Neuron(robotId)
@@ -44,10 +44,7 @@ class NEURAL_NETWORK:
 
         if self.do_hebbian:
             for s in self.synapses:
-                t0 = time.time()
-                self.synapses[s].Update_Synapse(self.neurons[s[0]], self.neurons[s[1]])
-                synapsetime = time.time() - t0
-                f.write(str(synapsetime) + "\n")
+                self.synapses[s].Update_Synapse(self.neurons[s[0]], self.neurons[s[1]], f)
 
         f.close()
                 
