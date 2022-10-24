@@ -35,7 +35,6 @@ class NEURAL_NETWORK:
         print("")
     
     def Update(self, robotId):
-        f = open("timedata/updatesynapsetimes.txt", 'a')
         for n in self.neurons:
             if self.neurons[n].Is_Sensor_Neuron():
                 self.neurons[n].Update_Sensor_Neuron(robotId)
@@ -44,9 +43,7 @@ class NEURAL_NETWORK:
 
         if self.do_hebbian:
             for s in self.synapses:
-                self.synapses[s].Update_Synapse(self.neurons[s[0]], self.neurons[s[1]], f)
-
-        f.close()
+                self.synapses[s].Update_Synapse(self.neurons[s[0]], self.neurons[s[1]])
                 
     def get_neuron_names(self):
         return self.neurons.keys()

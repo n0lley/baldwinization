@@ -4,8 +4,6 @@ import pyrosim as pyrosim
 
 import pyrosim.constants as c
 
-import time
-
 class SYNAPSE: 
 
     def __init__(self,line):
@@ -40,8 +38,7 @@ class SYNAPSE:
 
         return self.weightsAtEachUpdate
     
-    def Update_Synapse(self, presynapticNeuron, postsynapticNeuron, f):
-        t0 = time.time()
+    def Update_Synapse(self, presynapticNeuron, postsynapticNeuron):
         rate = self.learningRule[0]
         A = self.learningRule[1]
         B = self.learningRule[2]
@@ -58,11 +55,7 @@ class SYNAPSE:
             self.weight = 1
         elif self.weight < -1:
             self.weight = -1
-        updatetime = time.time() - t0
-        t0 = time.time()
         self.weightsAtEachUpdate.append(self.Get_Weight())
-        recordtime = time.time() - t0
-        f.write(str(updatetime) + "\t" + str(recordtime) + "\n")
 
 # -------------------------- Private methods -------------------------
 

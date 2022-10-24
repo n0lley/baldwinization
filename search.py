@@ -32,6 +32,7 @@ def step_hebbian(population, current_hebb):
     Perform weighted sum of population's hebbian parameters to determine the new weights
     Returns a dictionary of hebbian parameters corresponding to each synaptic connection
     """
+    f = open("hebbian.txt", 'a')
     #Extract fitness scores and hebbian parameters from each controller in the population
     hebbs_to_add = []
     next_hebb = {}
@@ -39,18 +40,30 @@ def step_hebbian(population, current_hebb):
         hebbs_to_add.append({"fitness":p.get_fitness(), "params":p.get_hebbian_parameters()})
 
     for key in hebbs_to_add[0]["params"].keys(): #for each synapse, create a sum of all parameter noise
-
+        f.write(str(key)+'\n')
+        f.write(str(current_hebb[key])+'\n')
         sums = [0]*4 #accumulator
         for hebb in hebbs_to_add:
-            noise = [current_hebb[key][i] - hebb["params"][key][i] for i in range(4)]
+            f.write('\n')
+            f.write(str(hebb['params'][key])+'\n')
+            noise = [hebb["params"][key][i] - current_hebb[key][i] for i in range(4)]
+            f.write(str(noise)+'\n')
             weighted_noise = [n * hebb["fitness"] for n in noise] #weight noise by the fitness it produced
+            f.write(str(weighted_noise)+'\t'+str(hebb['fitness'])+'\n')
             sums = np.add(sums, weighted_noise) #add weighted noises to total
+            f.write(str(sums)+'\n')
 
         #calculate weighted average noise, apply learning rate modifiers
+        f.write('total\n')
         sums *= ep.hebbian_alpha
+        f.write(str(sums)+'\n')
         sums /= (ep.hebbian_sigma * len(population))
+        f.write(str(sums)+'\n')
         next_hebb[key] = np.add(current_hebb[key], sums)
+        f.write(str(next_hebb[key])+'\n')
 
+    f.write('\n\n\n\n\n')
+    f.close()
     return next_hebb
 
 ##########  POPULATION-LEVEL METHODS  ###################
@@ -65,7 +78,7 @@ def select(population):
         new_pop.extend(winners)
     
     return new_pop[:ep.pop_size]
-        
+
 
 ########################################################
 seed = sys.argv[2] #establish random seed
