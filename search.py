@@ -55,19 +55,23 @@ def step_hebbian(population, current_hebb):
 
 ##########  POPULATION-LEVEL METHODS  ###################
         
-def select(population):
+def select(population, id_iterator):
     population = sorted(population, key=ep.fitness_sort, reverse=True)
     new_pop = [population[0]]
-    population = population[1:]
     
     while len(new_pop) < ep.pop_size:
         tournament = np.random.choice(population, size = ep.tournament_size, replace=False)
         winners = sorted(tournament, key=ep.fitness_sort, reverse=True)[:ep.tournament_winners]
         for w in winners:
-            population.remove(w)
-        new_pop.extend(winners)
+            if w in new_pop:
+                w_copy = copy.deepcopy(w)
+                w_copy.set_ID(id_iterator)
+                id_iterator += 1
+                new_pop.append(w_copy)
+            else:
+                new_pop.append(w)
     
-    return new_pop[:ep.pop_size]
+    return new_pop[:ep.pop_size], id_iterator
         
 
 ########################################################
@@ -149,7 +153,7 @@ for i in range(1, ep.total_gens):
 
     parent_hebb = step_hebbian(population, parent_hebb) #step hebbian
 
-    population = select(population) #cull population
+    population, id_iterator = select(population, id_iterator) #cull population
 
     print_string = "generation " + str(i) + " fitness " + str(round(population[0].get_fitness(), 3)) + " in " + str(int(time.time() - t0)) + " seconds"
     os.system("echo "+print_string)
