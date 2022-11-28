@@ -111,6 +111,10 @@ class CONTROLLER:
         
     def get_fitness(self):
         return self.fitness
+
+    def reset(self):
+        self.fitness = 0
+        self.hebbian_parameters = None
     
     def Print(self):
         for gene in self.genome:
@@ -118,11 +122,13 @@ class CONTROLLER:
 
     def start_simulation(self, seed, play_blind=1):
         self.generator.make_brain(self.get_genome(), self.get_hebbian_parameters(), self.ID)
-        os.system("python3 simulate.py "+self.generator.get_type()+" "+str(play_blind)+" "+self.ID+" "+seed+" 2&>"+seed+".out &")
+        os.system("python3 simulate.py "+self.generator.get_type()+" "+str(play_blind)+" "+self.ID+" "+seed+" 2&>"+seed+".txt &")
 
     def wait_to_finish(self, seed):
+
         while not os.path.exists(seed+"/fitness"+self.ID+".txt"):
             time.sleep(.001)
+
         f = open(seed+"/fitness"+self.ID+".txt", 'r')
         fits = f.read().strip().split('\n')
         self.fitness = float(fits[-1])
@@ -131,4 +137,6 @@ class CONTROLLER:
         f = open(seed+"/synapses"+self.ID+".p", 'rb')
         self.synaptic_activity = pickle.load(f)
         f.close()
+
         os.system("rm "+seed+"/synapses"+self.ID+".p")
+        os.system("rm nnfiles/"+self.generator.type+"_brain"+self.ID+".nndf")

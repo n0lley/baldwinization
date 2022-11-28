@@ -24,10 +24,10 @@ hebbian_sigma = .1
 #EVOLUTION PARAMETERS
 mutation_prob = .1
 total_gens = 200
-pop_size = 50
-num_children = 50
-tournament_size = 10
-tournament_winners = 3
+pop_size = 30
+num_children = 30
+tournament_size = 3
+tournament_winners = 1
 
 #HELPER FUNCTIONS
 def fitness_sort(i):

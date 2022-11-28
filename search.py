@@ -35,15 +35,19 @@ def step_hebbian(population, current_hebb):
     #Extract fitness scores and hebbian parameters from each controller in the population
     hebbs_to_add = []
     next_hebb = {}
+    fitlist = []
     for p in population:
         hebbs_to_add.append({"fitness":p.get_fitness(), "params":p.get_hebbian_parameters()})
+        fitlist.append(p.get_fitness())
+
+    fitmean = np.mean(fitlist)
 
     for key in hebbs_to_add[0]["params"].keys(): #for each synapse, create a sum of all parameter noise
 
         sums = [0]*4 #accumulator
         for hebb in hebbs_to_add:
-            noise = [current_hebb[key][i] - hebb["params"][key][i] for i in range(4)]
-            weighted_noise = [n * hebb["fitness"] for n in noise] #weight noise by the fitness it produced
+            noise = [hebb["params"][key][i] - current_hebb[key][i] for i in range(4)]
+            weighted_noise = [n * hebb["fitness"]/fitmean for n in noise] #weight noise by the fitness it produced
             sums = np.add(sums, weighted_noise) #add weighted noises to total
 
         #calculate weighted average noise, apply learning rate modifiers
@@ -58,10 +62,13 @@ def step_hebbian(population, current_hebb):
 def select(population):
     population = sorted(population, key=ep.fitness_sort, reverse=True)
     new_pop = [population[0]]
+    population = population[1:]
     
     while len(new_pop) < ep.pop_size:
-        tournament = np.random.choice(population, size = ep.tournament_size)
+        tournament = np.random.choice(population, size = ep.tournament_size, replace=False)
         winners = sorted(tournament, key=ep.fitness_sort, reverse=True)[:ep.tournament_winners]
+        for w in winners:
+            population.remove(w)
         new_pop.extend(winners)
     
     return new_pop[:ep.pop_size]
@@ -72,7 +79,7 @@ seed = sys.argv[2] #establish random seed
 np.random.seed(int(seed))
 
 #clear any old files
-os.system("rm nnfiles/*")
+os.system("rm nnfiles/"+sys.argv[1]+"*")
 os.system("rm "+seed+"/*")
 os.system("mkdir "+seed)
 
@@ -114,6 +121,9 @@ os.system("echo " + print_string)
 #do that again a bunch of times
 for i in range(1, ep.total_gens):
     t0 = time.time()
+    #reset the existing population's hebbian parameters and fitness
+    for p in population:
+        p.reset()
     #reproduce
     children = []
     while len(children) < ep.num_children:
@@ -125,22 +135,25 @@ for i in range(1, ep.total_gens):
 
         child.mutate() #mutate genome
 
-        #generate a new set of hebbian parameters from the parent set
-        new_hebb = create_new_hebbian_parameters(parent_hebb)
-        child.set_hebbian_parameters(new_hebb)
-
         children.append(child)
 
-    #test the children
-    for c in children:
-        c.start_simulation(seed, play_blind=1)
-    for c in children:
-        c.wait_to_finish(seed)
+    #add new individuals to population
+    population.extend(children)
 
-    population.extend(children)  #combine populations
-    population = select(population) #cull extras
+    # generate new hebbian parameters from the parent set
+    for p in population:
+        new_hebb = create_new_hebbian_parameters(parent_hebb)
+        p.set_hebbian_parameters(new_hebb)
+
+    #test the population
+    for p in population:
+        p.start_simulation(seed, play_blind=1)
+    for p in population:
+        p.wait_to_finish(seed)
 
     parent_hebb = step_hebbian(population, parent_hebb) #step hebbian
+
+    population = select(population) #cull population
 
     print_string = "generation " + str(i) + " fitness " + str(round(population[0].get_fitness(), 3)) + " in " + str(int(time.time() - t0)) + " seconds"
     os.system("echo "+print_string)
@@ -150,4 +163,4 @@ for i in range(1, ep.total_gens):
     f.close()
 
 os.system("rmdir "+seed)
-os.system("rm "+seed+".out")
+os.system("rm "+seed+".txt")

@@ -22,8 +22,5 @@ if not os.path.exists("./bodyfiles"):
     os.mkdir("bodyfiles")
 if not os.path.exists("./nnfiles"):
     os.mkdir("nnfiles")
-for r in ep.permitted_robot_types:
-    if not os.path.exists("./nnfiles/"+r):
-        os.mkdir("./nnfiles/"+r)
 create_world()
 create_bodies()
