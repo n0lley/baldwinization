@@ -139,4 +139,3 @@ class CONTROLLER:
         f.close()
 
         os.system("rm "+seed+"/synapses"+self.ID+".p")
-        os.system("rm nnfiles/"+self.generator.type+"_brain"+self.ID+".nndf")

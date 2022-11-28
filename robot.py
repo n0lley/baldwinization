@@ -18,6 +18,8 @@ class ROBOT:
         self.robotId = p.loadURDF("/bodyfiles/"+body_file)
         pyrosim.Prepare_To_Simulate(self.robotId)
         self.nn = NEURAL_NETWORK(brain_file, do_hebbian=True)
+
+        os.system("rm "+brain_file)
         
         for jointName in pyrosim.jointNamesToIndices:
             self.motors[jointName] = MOTOR(jointName)
