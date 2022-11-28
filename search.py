@@ -35,19 +35,15 @@ def step_hebbian(population, current_hebb):
     #Extract fitness scores and hebbian parameters from each controller in the population
     hebbs_to_add = []
     next_hebb = {}
-    fitlist = []
     for p in population:
         hebbs_to_add.append({"fitness":p.get_fitness(), "params":p.get_hebbian_parameters()})
-        fitlist.append(p.get_fitness())
-
-    fitmean = np.mean(fitlist)
 
     for key in hebbs_to_add[0]["params"].keys(): #for each synapse, create a sum of all parameter noise
 
         sums = [0]*4 #accumulator
         for hebb in hebbs_to_add:
             noise = [hebb["params"][key][i] - current_hebb[key][i] for i in range(4)]
-            weighted_noise = [n * hebb["fitness"]/fitmean for n in noise] #weight noise by the fitness it produced
+            weighted_noise = [n * hebb["fitness"] for n in noise] #weight noise by the fitness it produced
             sums = np.add(sums, weighted_noise) #add weighted noises to total
 
         #calculate weighted average noise, apply learning rate modifiers
