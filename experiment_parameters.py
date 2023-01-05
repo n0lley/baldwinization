@@ -23,7 +23,7 @@ hebbian_sigma = .1
 
 #EVOLUTION PARAMETERS
 mutation_prob = .1
-total_gens = 200
+total_gens = 300
 pop_size = 30
 num_children = 30
 tournament_size = 3
