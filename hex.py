@@ -69,7 +69,7 @@ class HEX(BUILDER):
         sensorNeurons = []
         hiddenNeurons = []
         
-        pyrosim.Start_NeuralNetwork("nnfiles/hex_brain"+filetag+".nndf")
+        pyrosim.Start_NeuralNetwork(seed+"/hex_brain"+filetag+".nndf")
         
         for i in range(6): #Hip Proprioceptive
             sensorNeurons.append(i)
