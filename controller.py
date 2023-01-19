@@ -121,7 +121,7 @@ class CONTROLLER:
             print(gene, ":", self.genome[gene])
 
     def start_simulation(self, seed, play_blind=1):
-        self.generator.make_brain(self.get_genome(), self.get_hebbian_parameters(), self.ID)
+        self.generator.make_brain(self.get_genome(), self.get_hebbian_parameters(), self.ID, seed)
         os.system("python3 simulate.py "+self.generator.get_type()+" "+str(play_blind)+" "+self.ID+" "+seed+" 2&>"+seed+".txt &")
 
     def wait_to_finish(self, seed):
@@ -132,6 +132,7 @@ class CONTROLLER:
         f = open(seed+"/fitness"+self.ID+".txt", 'r')
         fits = f.read().strip().split('\n')
         self.fitness = float(fits[-1])
+
         os.system("rm "+seed+"/fitness"+self.ID+".txt")
 
         f = open(seed+"/synapses"+self.ID+".p", 'rb')

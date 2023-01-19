@@ -8,12 +8,12 @@ import experiment_parameters as ep
 from motor import MOTOR
 
 class ROBOT:
-    def __init__(self, robot_type, id_tag):
+    def __init__(self, robot_type, seed, id_tag):
             
         self.motors = {}
         
         body_file = robot_type+"_body.urdf"
-        brain_file = "nnfiles/"+robot_type + "_brain"+id_tag+".nndf"
+        brain_file = seed+"/"+robot_type + "_brain"+id_tag+".nndf"
         
         self.robotId = p.loadURDF("/bodyfiles/"+body_file)
         pyrosim.Prepare_To_Simulate(self.robotId)

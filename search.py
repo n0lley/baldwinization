@@ -79,8 +79,7 @@ seed = sys.argv[2] #establish random seed
 np.random.seed(int(seed))
 
 #clear any old files
-os.system("rm nnfiles/"+sys.argv[1]+"*")
-os.system("rm "+seed+"/*")
+os.system("rm -rf "+seed+"/*")
 os.system("mkdir "+seed)
 
 #generate initial robot and variables
@@ -162,5 +161,5 @@ for i in range(1, ep.total_gens):
     pickle.dump(population, f)
     f.close()
 
-os.system("rmdir "+seed)
+os.system("rm -rf "+seed)
 os.system("rm "+seed+".txt")

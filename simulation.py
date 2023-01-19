@@ -7,7 +7,7 @@ from robot import ROBOT
 import experiment_parameters as ep
 
 class SIMULATION:
-    def __init__(self, type, play_blind, id_tag):
+    def __init__(self, type, play_blind, id_tag, seed):
         play_blind = int(play_blind)
         if play_blind:
             self.physicsClient = p.connect(p.DIRECT)
@@ -16,7 +16,7 @@ class SIMULATION:
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, ep.gravity)
         self.world = WORLD()
-        self.robot = ROBOT(type, id_tag)
+        self.robot = ROBOT(type, seed, id_tag)
 
     def run(self, play_blind, id_tag, seed):
         for timestep in range(ep.sim_time):

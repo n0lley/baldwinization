@@ -64,7 +64,7 @@ class HEX(BUILDER):
 
     
     
-    def make_brain(self, weights, hebb, filetag):
+    def make_brain(self, weights, hebb, filetag, seed):
         motorNeurons = []
         sensorNeurons = []
         hiddenNeurons = []

@@ -81,7 +81,7 @@ class QUAD(BUILDER):
         pyrosim.End()
 
     
-    def make_brain(self, weights, hebb, filetag):
+    def make_brain(self, weights, hebb, filetag, seed):
         motorNeurons = []
         sensorNeurons = []
         hiddenNeurons = []
