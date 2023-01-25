@@ -5,8 +5,6 @@ sim_time = 1000
 dt = .001
 gravity = -9.8
 
-monitor_percent = .1
-
 #ROBOT PHYSICAL PARAMETERS
 length = .5
 radius = length/10
@@ -22,7 +20,7 @@ hebbian_alpha = .2
 hebbian_sigma = .1
 
 #EVOLUTION PARAMETERS
-mutation_prob = .1
+mutation_prob = .05
 total_gens = 200
 pop_size = 30
 num_children = 30

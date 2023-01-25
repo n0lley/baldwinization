@@ -158,7 +158,7 @@ for i in range(1, ep.total_gens):
     os.system("echo "+print_string)
 
     f = open("data/"+sys.argv[2]+"/"+str(i)+".p", "wb")
-    pickle.dump(population, f)
+    pickle.dump(population[0], f)
     f.close()
 
 os.system("rm -rf "+seed)
