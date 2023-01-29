@@ -79,12 +79,12 @@ class CONTROLLER:
 
         return parameter_set
 
-    def mutate(self):
+    def mutate(self, mutation_rate):
         """
         Modify each beginning synaptic weight with probability (ep.mutation_prob). Perturbations are on a normal distribution centered on the current synaptic weight, bounded within the range [-1, 1]
         """
         for gene in self.genome:
-            if np.random.random() < ep.mutation_prob:
+            if np.random.random() < mutation_rate:
                 #modify initial weight
                 self.genome[gene][0] = np.random.normal(loc = self.genome[gene][0])
                 self.genome[gene][0] = round(self.genome[gene][0], 6)

@@ -86,6 +86,7 @@ os.system("mkdir "+seed)
 population = []
 robot_type = sys.argv[1]
 assert robot_type.lower() in ep.permitted_robot_types, "Robot type not recognized."
+mutation_rate = ep.mutation_prob
 
 population.append(CONTROLLER(robot_type, 0))
 
@@ -132,9 +133,15 @@ for i in range(1, ep.total_gens):
         child.set_ID(id_iterator)
         id_iterator += 1
 
-        child.mutate() #mutate genome
+        child.mutate(mutation_rate) #mutate genome
 
         children.append(child)
+
+    #decay mutation one step
+    if ep.do_decay:
+        print("decaying mutation")
+        mutation_rate = mutation_rate * ep.mutation_decay
+        print("new mutation rate:", mutation_rate)
 
     #add new individuals to population
     population.extend(children)
