@@ -36,7 +36,7 @@ def step_hebbian(population, current_hebb):
     hebbs_to_add = []
     next_hebb = {}
     for p in population:
-        hebbs_to_add.append({"fitness":p.get_fitness(), "params":p.get_hebbian_parameters()})
+        hebbs_to_add.append({"fitness":np.random.random(), "params":p.get_hebbian_parameters()})
 
     for key in hebbs_to_add[0]["params"].keys(): #for each synapse, create a sum of all parameter noise
 

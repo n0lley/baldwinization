@@ -5,8 +5,8 @@ import experiment_parameters as ep
 import numpy as np
 import scikits.bootstrap as bootstrap
 
+treatment = input("treatment: ")
 run = input("robot type to analyse: ")
-path = "data/"+run
 
 type = "UNASSIGNED"
 
@@ -18,25 +18,29 @@ elif run == '2':
     type = "Hexapod"
 
 runs = []
-for d in os.listdir("data"):
+for d in os.listdir(treatment):
     if d[0] == run:
         runs.append(d)
 
 variance_means = {}
 fitnesses = {}
+
 for i in range(ep.total_gens):
     variance_means[i] = []
     fitnesses[i] = []
     for r in runs:
-        f = open("data/"+r+"/"+str(i)+".p", 'rb')
-        pop = pickle.load(f)
+        f = open(treatment+"/"+r+"/"+str(i)+".p", 'rb')
+        if i == 0:
+            pop = pickle.load(f)[0]
+        else:
+            pop = pickle.load(f)
         f.close()
 
-        fitnesses[i].append(pop[0].fitness)
+        fitnesses[i].append(pop.fitness)
 
         variances = []
-        for s in pop[0].synaptic_activity:
-            variances.append(np.var(pop[0].synaptic_activity[s]))
+        for s in pop.synaptic_activity:
+            variances.append(np.var(pop.synaptic_activity[s]))
         variance_means[i].append(np.mean(variances))
 
 mean_var_means = []
