@@ -121,9 +121,9 @@ class QUAD(BUILDER):
 
         for h in hiddenNeurons:
             for m in motorNeurons:
-                w = weights[(s, h)][0]
-                learning_rule = [weights[(s, h)][1]] #grab synapse learning rate
-                learning_rule.extend(hebb[(s, h)]) #bundle with hebb rules
+                w = weights[(h, m)][0]
+                learning_rule = [weights[(h, m)][1]] #grab synapse learning rate
+                learning_rule.extend(hebb[(h, m)]) #bundle with hebb rules
                 pyrosim.Send_Synapse(sourceNeuronName=h, targetNeuronName=m, weight=w, learningRule=learning_rule)
         
         pyrosim.End()
