@@ -12,7 +12,8 @@ class CONTROLLER:
     
     def __init__(self, type, id, input_parameters=None):
         """
-        From provided robot type, calculate genome dimensions and generate a random nn genome of that size
+        From provided robot type, establish genome dimensions and generate a random nn genome of that shape
+        New robot types will need to expand this bit.
         If no hebbian parameters are provided for use, generate a new set of hebbian parameters.
         """
     
@@ -46,7 +47,7 @@ class CONTROLLER:
             exit(0)
 
         #create (neuron, neuron) pairs and attach random synaptic weights to them
-        #generate hebbian parameters if none have been provided
+        #generate hebbian parameters if none have been provided (see function for more on that)
         for col in range(len(dimensions)-1):
             for n1 in dimensions[col]:
                 for n2 in dimensions[col+1]:
@@ -71,6 +72,8 @@ class CONTROLLER:
         """
         Generates and returns a set of hebbian parameters.
         Should only be called at initialization and only if no parameters are provided.
+        EDIT - This should only be called once, for the first robot of the first population.
+        Subsequent robots get random perturbations of that original network (see najarro + risi paper)
         """
         parameter_set = []
         for i in range(4):
@@ -81,7 +84,8 @@ class CONTROLLER:
 
     def mutate(self, mutation_rate):
         """
-        Modify each beginning synaptic weight with probability (ep.mutation_prob). Perturbations are on a normal distribution centered on the current synaptic weight, bounded within the range [-1, 1]
+        Modify each beginning synaptic weight with probability (ep.mutation_prob).
+        Perturbations are on a normal distribution centered on the current synaptic weight, bounded within the range [-1, 1]
         """
         for gene in self.genome:
             if np.random.random() < mutation_rate:
@@ -121,10 +125,19 @@ class CONTROLLER:
             print(gene, ":", self.genome[gene])
 
     def start_simulation(self, seed, play_blind=1):
+        """
+        Spins up a simulation with simulate.py
+        Output channel goes to <RUN SEED>.txt
+        Shouldn't put out more than the usual pybullet chatter unless something blows up
+        """
         self.generator.make_brain(self.get_genome(), self.get_hebbian_parameters(), self.ID, seed)
         os.system("python3 simulate.py "+self.generator.get_type()+" "+str(play_blind)+" "+self.ID+" "+seed+" 2&>"+seed+".txt &")
 
     def wait_to_finish(self, seed):
+        """
+        Holding function until simulation wraps up+transcribes output to file
+        Saves fitness and synaptic activity data to class vars then deletes those files
+        """
 
         while not os.path.exists(seed+"/fitness"+self.ID+".txt"):
             time.sleep(.001)
@@ -137,6 +150,10 @@ class CONTROLLER:
 
         f = open(seed+"/synapses"+self.ID+".p", 'rb')
         self.synaptic_activity = pickle.load(f)
+        f.close()
+
+        f = open(seed+"/neurons"+self.ID+".p", 'rb')
+        self.neuron_activity = pickle.load(f)
         f.close()
 
         os.system("rm "+seed+"/synapses"+self.ID+".p")

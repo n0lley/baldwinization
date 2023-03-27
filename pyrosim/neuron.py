@@ -15,6 +15,7 @@ class NEURON:
         self.linkName = None
         self.jointName = None
         self.neuronsFeedingThis = []
+        self.activityHistory = []
 
         self.Determine_Name(line)
 
@@ -33,6 +34,7 @@ class NEURON:
             sensor_value = pyrosim.Get_Joint_Angle(robotId, self.Get_Joint_Name())/math.pi
         self.Set_Value(sensor_value)
         self.Round_Value()
+        self.activityHistory.append(self.Get_Value())
     
     def Update_Hidden_Or_Motor_Neuron(self, neurons, synapses):
         self.Set_Value(0)
@@ -41,6 +43,7 @@ class NEURON:
             
         self.Threshold()
         self.Round_Value()
+        self.activityHistory.append(self.Get_Value())
         
         
     def Allow_Presynaptic_Neuron_To_Influence_Me(self, neuron, synapse):
@@ -100,6 +103,10 @@ class NEURON:
     def Round_Value(self):
         
         self.value = round(self.value, 6)
+
+    def Get_History(self):
+
+        return self.activityHistory
 
 # -------------------------- Private methods -------------------------
 

@@ -63,6 +63,11 @@ class NEURAL_NETWORK:
 
         return synapse_activity
 
+    def get_neuron_activity(self):
+        neuron_activity = {}
+        for n in self.neurons:
+            neuron_activity[n] = self.neurons[n].Get_History()
+
 # ---------------- Private methods --------------------------------------
 
     def Add_Neuron_According_To(self,line):

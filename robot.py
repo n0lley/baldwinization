@@ -38,6 +38,7 @@ class ROBOT:
         position = p.getLinkState(self.robotId, 0)[0]
         displacement = (position[0]**2 + position[1]**2)**.5
         synaptic_behavior = self.nn.get_synapse_activity()
+        neuron_activity = self.nn.get_neuron_activity()
 
         f = open(seed+"/tmp"+id_tag+".txt", 'w')
         f.write(str(displacement))
@@ -45,6 +46,10 @@ class ROBOT:
 
         f = open(seed+"/synapses"+id_tag+".p", 'wb')
         pickle.dump(synaptic_behavior, f)
+        f.close()
+
+        f = open(seed+"/neurons"+id_tag+".p", 'wb')
+        pickle.dump(neuron_activity, f)
         f.close()
 
         os.system("mv "+seed+"/tmp"+id_tag+".txt "+seed+"/fitness"+id_tag+".txt")
