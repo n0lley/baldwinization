@@ -22,7 +22,7 @@ hebbian_sigma = .1
 #EVOLUTION PARAMETERS
 mutation_prob = .1
 mutation_decay = .99
-do_decay = True
+do_decay = False
 
 total_gens = 200
 pop_size = 30

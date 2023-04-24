@@ -1,13 +1,15 @@
 import pickle
+import matplotlib.pyplot as plt
 import sys
 
 def fitness_sort(i):
     return i.fitness
 
-seed = sys.argv[1]
-gen = sys.argv[2]
+treatment = sys.argv[1]
+seed = sys.argv[2]
+gen = sys.argv[3]
 
-f = open("data/"+seed+"/"+gen+".p", "rb")
+f = open("data/"+treatment+"/"+seed+"/"+gen+".p", "rb")
 
 if gen == '0':
     pop = pickle.load(f)
@@ -16,4 +18,9 @@ if gen == '0':
 else:
     bestIndividual = pickle.load(f)
 f.close()
-bestIndividual.start_simulation("playback", "0")
+
+print(bestIndividual.fitness)
+bestIndividual.start_simulation("playback")
+bestIndividual.wait_to_finish("playback")
+
+plt.show()

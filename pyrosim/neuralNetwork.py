@@ -67,6 +67,7 @@ class NEURAL_NETWORK:
         neuron_activity = {}
         for n in self.neurons:
             neuron_activity[n] = self.neurons[n].Get_History()
+        return neuron_activity
 
 # ---------------- Private methods --------------------------------------
 
