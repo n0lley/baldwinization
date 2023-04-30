@@ -1,5 +1,6 @@
 import pickle
 import os
+import sys
 
 def fitness_sort(i):
     return i.fitness
@@ -48,3 +49,5 @@ def one_sim(seed, gen):
     print(bestIndividual.fitness)
     bestIndividual.start_simulation("playback", play_blind=0)
     bestIndividual.wait_to_finish("playback")
+
+full_sim(sys.argv[1], sys.argv[2])
