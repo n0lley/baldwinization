@@ -10,11 +10,11 @@ def full_sim(type, generation):
     for seed in os.listdir("data/10% Mutation/"):
         if seed.startswith(type):
             paths.append("data/10% Mutation/"+seed+"/"+generation+".p")
-            print(paths[-1])
 
     group_to_sim = []
 
     for path in paths:
+        print(path)
         f = open(path, 'rb')
 
         if generation == '0':
@@ -26,10 +26,9 @@ def full_sim(type, generation):
             group_to_sim.append(individual)
         f.close()
 
-    for i in group_to_sim:
-        i.start_simulation("playback")
-    for i in group_to_sim:
-        i.wait_to_finish("playback")
+        group_to_sim[-1].start_simulation("playback")
+        group_to_sim[-1].wait_to_finish("playback")
+
     f = open("playback/data/"+type+generation+".p",'wb')
     pickle.dump(group_to_sim)
     f.close()
