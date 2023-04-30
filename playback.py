@@ -1,26 +1,50 @@
 import pickle
-import matplotlib.pyplot as plt
-import sys
+import os
 
 def fitness_sort(i):
     return i.fitness
 
-treatment = sys.argv[1]
-seed = sys.argv[2]
-gen = sys.argv[3]
+def full_sim(type, generation):
+    paths = []
+    for seed in os.listdir("data/10% Mutation/"):
+        if seed.startswith(type):
+            paths.append("data/10% Mutation/"+seed+"/"+generation+".p")
+            print(paths[-1])
 
-f = open("data/"+treatment+"/"+seed+"/"+gen+".p", "rb")
+    group_to_sim = []
 
-if gen == '0':
-    pop = pickle.load(f)
-    pop = sorted(pop, key=fitness_sort, reverse=True)
-    bestIndividual = pop[0]
-else:
-    bestIndividual = pickle.load(f)
-f.close()
+    for path in paths:
+        f = open(path, 'rb')
 
-print(bestIndividual.fitness)
-bestIndividual.start_simulation("playback")
-bestIndividual.wait_to_finish("playback")
+        if generation == '0':
+            pop = pickle.load(f)
+            pop = sorted(pop, key=fitness_sort, reverse=True)
+            group_to_sim.append(pop[0])
+        else:
+            individual = pickle.load(f)
+            group_to_sim.append(individual)
+        f.close()
 
-plt.show()
+    for i in group_to_sim:
+        i.start_simulation("playback")
+    for i in group_to_sim:
+        i.wait_to_finish("playback")
+    f = open("playback/data/"+type+generation+".p",'wb')
+    pickle.dump(group_to_sim)
+    f.close()
+
+def one_sim(seed, gen):
+
+    f = open("data/10% Mutation/"+seed+"/"+gen+".p", "rb")
+
+    if gen == '0':
+        pop = pickle.load(f)
+        pop = sorted(pop, key=fitness_sort, reverse=True)
+        bestIndividual = pop[0]
+    else:
+        bestIndividual = pickle.load(f)
+    f.close()
+
+    print(bestIndividual.fitness)
+    bestIndividual.start_simulation("playback", play_blind=0)
+    bestIndividual.wait_to_finish("playback")
