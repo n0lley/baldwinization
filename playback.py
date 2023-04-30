@@ -30,7 +30,7 @@ def full_sim(type, generation):
         group_to_sim[-1].wait_to_finish("playback")
 
     f = open("playback/data/"+type+generation+".p",'wb')
-    pickle.dump(group_to_sim)
+    pickle.dump(group_to_sim, f)
     f.close()
 
 def one_sim(seed, gen):
