@@ -6,11 +6,11 @@ This code exists to simulate neural-network controlled robots in Pybullet to stu
 
 This code makes use of the following libraries:
 
--matplotlib
--numpy
--pickle
--pybullet
--scikits
+- matplotlib
+- numpy
+- pickle
+- pybullet
+- scikits
 
 ## How To Run This Code
 
